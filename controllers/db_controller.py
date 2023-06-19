@@ -42,7 +42,7 @@ class DatabaseController:
         return result
 
     def createTables(self):
-        ClienteBase.metadata.create_all(self.engine)
+        base.metadata.create_all(self.engine)
     
     @check_database_connection
     def conseguirClientes(self):
