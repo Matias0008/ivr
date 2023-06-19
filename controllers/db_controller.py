@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
@@ -7,7 +8,7 @@ from models.Cliente_model import Cliente
 from models.Estado_model import Estado
 from models.CambioEstado_model import CambioEstado
 from models.Llamada_model import Llamada
-from models.Base import base
+from models.Models import base
 
 class DatabaseController:
     def __init__(self):
@@ -37,7 +38,12 @@ class DatabaseController:
     def createTables(self):
         base.metadata.create_all(self.engine)
     
-    def conseguirClientes(self):
-        self.connect()  # Conecta la sesión antes de usarla
+    def conseguirClientes(self) -> List[Cliente]:
+        self.connect()
         clientes = self.session.query(Cliente).all()
         return clientes
+
+    def conseguirLlamadas(self) -> List[Llamada]:
+        self.connect()
+        llamadas = self.session.query(Llamada).all()
+        return llamadas 
