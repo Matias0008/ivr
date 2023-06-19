@@ -1,7 +1,7 @@
 from sqlalchemy import  Column, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
-from models.Models import *
+from models.Base import base
 
 class Cliente(base):
     __tablename__ = "cliente"

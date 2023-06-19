@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import declarative_base, relationship
 
-from models.Models import *
+from models.Base import base
 
 class CambioEstado(base):
     __tablename__ = "cambioestado"
