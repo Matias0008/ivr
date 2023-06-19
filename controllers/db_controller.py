@@ -3,7 +3,8 @@ import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-from models.Cliente_model import ClienteBase, Cliente
+from models.Cliente_model import  Cliente
+from models.Models import base
 
 def check_database_connection(func):
     def wrapper(self, *args, **kwargs):
@@ -41,7 +42,7 @@ class DatabaseController:
         return result
 
     def createTables(self):
-        ClienteBase.metadata.create_all(self.engine)
+        base.metadata.create_all(self.engine)
     
     @check_database_connection
     def conseguirClientes(self):
