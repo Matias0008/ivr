@@ -1,9 +1,17 @@
 import tkinter as tk
 import style.ttkbootstrap as ttk
 from style.ttkbootstrap.tableview import Tableview
-from controllers.db_controller import DatabaseController
 
 class EncuestaBoundary:
+    frame: ttk.Frame
+    btnConsultarEncuesta: ttk.Button
+    btnBuscar: ttk.Button
+    filtrosFrame: ttk.Frame
+    fechaInicioLbl: ttk.Label
+    fechaInicioDate: ttk.DateEntry
+    fechaFinLbl: ttk.Label
+    fechaFinDate: ttk.Label
+
     def __init__(self, controller):
         self.controller = controller
 
@@ -19,8 +27,13 @@ class EncuestaBoundary:
         self.frame = tk.Frame(self.root)
         self.frame.pack()
 
+    def opcionConsultarEncuesta(self):
+        self.habilitarVentana()
+
+    def habilitarVentana(self):
         self.btnConsultarEncuesta = ttk.Button(self.frame, text="Consultar encuesta", style="ConsultarEncuesta.TButton", padding=15, command=self.controller.consultarEncuesta)
         self.btnConsultarEncuesta.pack(anchor="center", pady=100, padx=100)
+        self.root.mainloop()
 
     def habilitarFiltrosPorPeriodo(self):
         self.btnConsultarEncuesta.destroy()
@@ -33,26 +46,29 @@ class EncuestaBoundary:
         self.separador.grid(column=0, row=1, sticky="NSEW", columnspan=2)
 
         # Configuracion para la fecha desde
-        self.fechaDesdeLbl = ttk.Label(self.filtrosFrame, text="Fecha inicio")
-        self.fechaDesdeLbl.grid(column=0, row=2, pady=(20, 5))
+        self.fechaInicioLbl = ttk.Label(self.filtrosFrame, text="Fecha inicio")
+        self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
 
-        self.fechaDesde = ttk.DateEntry(self.filtrosFrame)
-        self.fechaDesde.grid(column=0, row=3)
-        self.fechaDesde.entry.configure(font=("JetBrains Mono", 14), width=12)
-        self.fechaDesde.button.configure(padding=6)
+        self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame)
+        self.fechaInicioDate.grid(column=0, row=3)
+        self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
+        self.fechaInicioDate.button.configure(padding=6)
 
         # Configuracion para la fecha fin
         self.fechaFinLbl = ttk.Label(self.filtrosFrame, text="Fecha fin")
         self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
 
-        self.fechaFin = ttk.DateEntry(self.filtrosFrame)
-        self.fechaFin.grid(column=1, row=3, padx=(80, 0))
-        self.fechaFin.entry.configure(font=("JetBrains Mono", 14), width=12)
-        self.fechaFin.button.configure(padding=6)
+        self.fechaFinDate = ttk.DateEntry(self.filtrosFrame)
+        self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
+        self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
+        self.fechaFinDate.button.configure(padding=6)
 
         # Boton para accionar la busqueda
         self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.buscarLlamadas)
         self.btnBuscar.grid(column=0, row=4, columnspan=2, pady=(40, 0), sticky="NSEW")
+
+    def tomarFechaInicio(self, event):
+        print("Tocaste la fecha de inicio")
 
     def buscarLlamadas(self):
         coldata = [
@@ -79,6 +95,3 @@ class EncuestaBoundary:
 
     def mostrarEncuestas(self):
         self.controller.mostrarEncuestas()
-    
-    def opcionConsultarEncuesta(self):
-        self.root.mainloop()
