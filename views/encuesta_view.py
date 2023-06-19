@@ -64,13 +64,16 @@ class EncuestaBoundary:
         self.fechaFinDate.button.configure(padding=6)
 
         # Boton para accionar la busqueda
-        self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.buscarLlamadas)
+        self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.tomarPeriodo)
         self.btnBuscar.grid(column=0, row=4, columnspan=2, pady=(40, 0), sticky="NSEW")
 
-    def tomarFechaInicio(self, event):
-        print("Tocaste la fecha de inicio")
+    def tomarPeriodo(self):
+        fechaInicio = self.fechaInicioDate.entry.get()
+        fechaFin = self.fechaFinDate.entry.get()
+        self.controller.tomarPeriodo(fechaInicio, fechaFin)
 
     def buscarLlamadas(self):
+
         coldata = [
         {"text": "ID", "stretch": False },
         {"text": "Nombre", "stretch": True},
