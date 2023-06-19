@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
 
-LlamadaBase = declarative_base()
+from models.Models import *
 
-class Llamada(LlamadaBase):
+class Llamada(base):
     __tablename__ = "llamada"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -12,8 +12,8 @@ class Llamada(LlamadaBase):
     duracion = Column(Integer)
     encuestaEnviada = Column(Boolean)
     observacionAuditor = Column(String)
-    clienteId = Column(Integer, ForeignKey('cliente.id'))
-    cliente = relationship("Cliente", back_populates="llamada")
+    clienteDni = Column(Integer, ForeignKey('cliente.dni'))
+    cliente = relationship("Cliente", back_populates="llamadas")
     cambiosEstado = relationship("CambioEstado", back_populates="llamada")
 
     def esDePeriodo(self, fechaInicio: String, fechaFin: String):
