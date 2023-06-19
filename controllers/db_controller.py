@@ -4,48 +4,40 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 from models.Cliente_model import Cliente
+from models.Estado_model import Estado
+from models.CambioEstado_model import CambioEstado
+from models.Llamada_model import Llamada
 from models.Base import base
-
-def check_database_connection(func):
-    def wrapper(self, *args, **kwargs):
-        if not self.engine or not self.Session:
-            raise ConnectionError("La base de datos no está conectada")
-        return func(self, *args, **kwargs)
-    return wrapper
 
 class DatabaseController:
     def __init__(self):
         self.db_url = os.environ.get('DATABASE_URL')
-        self.engine = None
-        self.Session = None
-    
-    @property
-    def session(self):
-        return self.Session
-
-    def connect(self):
         self.engine = create_engine(self.db_url)
         self.Session = sessionmaker(bind=self.engine)
+        self.session = None
+
+    def connect(self):
+        if not self.session:
+            self.session = self.Session()
 
     def disconnect(self):
+        if self.session:
+            self.session.close()
+            self.session = None
         if self.engine:
             self.engine.dispose()
-        self.engine = None
-        self.Session = None
+            self.engine = None
 
-    @check_database_connection
     def execute_query(self, query):
-        session = self.Session()
+        self.connect()  # Conecta la sesión antes de usarla
         query = text(query)
-        result = session.execute(query).fetchall()
-        session.close()
+        result = self.session.execute(query).fetchall()
         return result
 
     def createTables(self):
         base.metadata.create_all(self.engine)
     
-    @check_database_connection
     def conseguirClientes(self):
-        clientes = self.Session().query(Cliente).all()
-        self.disconnect()
+        self.connect()  # Conecta la sesión antes de usarla
+        clientes = self.session.query(Cliente).all()
         return clientes
