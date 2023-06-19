@@ -1,8 +1,6 @@
-import typing
 import tkinter as tk
-import ttkbootstrap as ttk
-
-from ttkbootstrap.tableview import Tableview
+import style.ttkbootstrap as ttk
+from style.ttkbootstrap.tableview import Tableview
 from controllers.db_controller import DatabaseController
 
 class EncuestaBoundary:
