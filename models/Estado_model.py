@@ -1,7 +1,7 @@
 from sqlalchemy import  Column, Integer, String,  ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
 
-from models.Models import *
+from models.Base import base
 
 class Estado(base):
     __tablename__ = "estado"
