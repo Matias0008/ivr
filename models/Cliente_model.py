@@ -1,12 +1,12 @@
 from sqlalchemy import  Column, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
-ClienteBase = declarative_base()
+from models.Models import *
 
-class Cliente(ClienteBase):
+class Cliente(base):
     __tablename__ = "cliente"
     
-    dni = Column(Integer, primary_key=True, unique=True)
+    dni = Column(Integer, primary_key=True)
     nombre = Column(String)
     apellido = Column(String)
     nroCelular = Column(Integer)

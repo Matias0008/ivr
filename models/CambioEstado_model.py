@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import declarative_base, relationship
 
-CambioEstadoBase= declarative_base()
+from models.Models import *
 
-class CambioEstado(CambioEstadoBase):
+class CambioEstado(base):
     __tablename__ = "cambioestado"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
