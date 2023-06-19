@@ -10,9 +10,9 @@ class CambioEstado(base):
     fechaHoraInicio = Column(DateTime, default=func.now())
     fechaHoraFin = Column(DateTime)
     estadoId = Column(Integer, ForeignKey('estado.id'))
-    estado = relationship("Estado", back_populates="cambioestado")
+    estado = relationship("Estado", back_populates="cambiosEstado")
     llamadaId = Column(Integer, ForeignKey('llamada.id'))
-    llamada = relationship("Llamada", back_populates="cambioestado")
+    llamada = relationship("Llamada", back_populates="cambiosEstado")
 
     def getFechaHoraInicio(self):
         return self.fechaHoraInicio
