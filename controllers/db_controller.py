@@ -10,6 +10,10 @@ from models.CambioEstado_model import CambioEstado
 from models.Llamada_model import Llamada
 from models.RespuestasCliente_model import RespuestaDeCliente
 from models.RespuestaPosible_model import RespuestaPosible
+from models.Encuesta_model import Encuesta
+from models.Pregunta_model import Pregunta
+
+
 from models.Models import base
 
 class DatabaseController:
@@ -64,8 +68,25 @@ class DatabaseController:
             Llamada(duracion=30, descripcionOperador='Descripcion del operador 2', detalleAccionRequerida='Se pausa tarjeta por extravío', encuestaEnviada=False, observacionAuditor='', clienteDni=35603215),
             Llamada(duracion=20, descripcionOperador='Descripcion del operador 3', detalleAccionRequerida='Se renueva la tarjeta por extravío', encuestaEnviada=True, observacionAuditor='', clienteDni=45789763),
             Llamada(duracion=15, descripcionOperador='Descripcion del operador 4', detalleAccionRequerida='Se registra la notificación de robo', encuestaEnviada=True, observacionAuditor='', clienteDni=44741306),
-            RespuestaPosible(),
+            Encuesta(descripcion = 'Atención al cliente', fechaVigencia = '2023-05-24 12:12:36'),
+            Encuesta(descripcion = 'Servicio', fechaVigencia = '2023-03-21 20:31:41'),
+            Encuesta(descripcion = 'Conformidad', fechaVigencia = '2023-03-21 20:31:41'),
+            Pregunta(encuestaId=1, descripcion = '¿Se sintió conforme con su la atención ofrecida?'),
+            Pregunta(encuestaId=2, descripcion = '¿Cumplió su objetivo en esta llamada?'),
+            Pregunta(encuestaId=3, descripcion = '¿Del 1 al 5, cómo puntuaría a su ayudante?'),
+            RespuestaPosible(preguntaId = 1, descripcion = 'Si'),
+            RespuestaPosible(preguntaId = 1, descripcion = 'No'),
+            RespuestaPosible(preguntaId = 1, descripcion = 'Tal vez'),
+            RespuestaPosible(preguntaId = 2, descripcion = 'Si'),
+            RespuestaPosible(preguntaId = 2, descripcion = 'No'),
+            RespuestaPosible(preguntaId = 2, descripcion = 'Tal vez'),
+            RespuestaPosible(preguntaId = 3, descripcion = '1'),
+            RespuestaPosible(preguntaId = 3, descripcion = '2'),
+            RespuestaPosible(preguntaId = 3, descripcion = '3'),
+            RespuestaPosible(preguntaId = 3, descripcion = '4'),
+            RespuestaPosible(preguntaId = 3, descripcion = '5'),
             RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 2, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 10, llamadaId=4),
             RespuestaDeCliente(fechaEncuesta='2023-05-25', respuestaPosibleId = 4, llamadaId=2)
         ])
         self.session.commit()
