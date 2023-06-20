@@ -8,6 +8,8 @@ from models.Cliente_model import Cliente
 from models.Estado_model import Estado
 from models.CambioEstado_model import CambioEstado
 from models.Llamada_model import Llamada
+from models.RespuestasCliente_model import RespuestaDeCliente
+from models.RespuestaPosible_model import RespuestaPosible
 from models.Models import base
 
 class DatabaseController:
@@ -40,12 +42,33 @@ class DatabaseController:
         base.metadata.drop_all(self.engine)
         self.createTables()
         self.session.add_all([
-            Cliente(dni = 44741306 ,nombre='Matias', apellido = 'Delgado', nroCelular = '154197321'),
+            Cliente(dni = 44741306 ,nombre='Matias', apellido = 'Delgado', nroCelular = '3534197321'),
             Cliente(dni = 45678912 ,nombre='Valentino', apellido = 'Lattanzi', nroCelular = '3535630896'),
-            Cliente(dni = 44741306 ,nombre='Alejo', apellido = 'Giustinich', nroCelular = '3536789451'),
-            Cliente(dni = 44741306 ,nombre='Nicolas', apellido = 'Antuña', nroCelular = '3535670983'),
-            Cliente(dni = 44741306 ,nombre='Ignacio', apellido = 'Gonzalez', nroCelular = '3534771816')
+            Cliente(dni = 44551156 ,nombre='Alejo', apellido = 'Giustinich', nroCelular = '3536789451'),
+            Cliente(dni = 45789763 ,nombre='Nicolas', apellido = 'Antuña', nroCelular = '3535670983'),
+            Cliente(dni = 35603215 ,nombre='Ignacio', apellido = 'Gonzalez', nroCelular = '3534771816'),
+            Estado(nombre='Iniciada'),
+            Estado(nombre='Finalizada'),
+            Estado(nombre='Cancelada'),
+            Estado(nombre='En curso'),
+            Estado(nombre='Descartada'),
+            Estado(nombre='Pendiente de escucha'),
+            Estado(nombre='Correcta'),
+            Estado(nombre='Con observacion'),
+            CambioEstado(fechaHoraInicio='2023-05-25 12:12:36', fechaHoraFin='2023-05-25 12:13:36', estadoId = 1, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 4, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 2, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 6, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 7, llamadaId = 1),
+            Llamada(duracion=60, descripcionOperador='Descripcion del operador 1', detalleAccionRequerida='Se cancela tarjeta por robo', encuestaEnviada=False, observacionAuditor='', clienteDni=44741306),
+            Llamada(duracion=30, descripcionOperador='Descripcion del operador 2', detalleAccionRequerida='Se pausa tarjeta por extravío', encuestaEnviada=False, observacionAuditor='', clienteDni=35603215),
+            Llamada(duracion=20, descripcionOperador='Descripcion del operador 3', detalleAccionRequerida='Se renueva la tarjeta por extravío', encuestaEnviada=True, observacionAuditor='', clienteDni=45789763),
+            Llamada(duracion=15, descripcionOperador='Descripcion del operador 4', detalleAccionRequerida='Se registra la notificación de robo', encuestaEnviada=True, observacionAuditor='', clienteDni=44741306),
+            RespuestaPosible(),
+            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 2, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-05-25', respuestaPosibleId = 4, llamadaId=2)
         ])
+        self.session.commit()
 
     def createTables(self):
         base.metadata.create_all(self.engine)
