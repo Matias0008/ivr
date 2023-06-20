@@ -11,3 +11,12 @@ class Pregunta(base):
     respuestasPosible = relationship("RespuestaPosible", back_populates="pregunta")
     encuestaId = Column(Integer, ForeignKey("encuesta.id"))
     encuesta = relationship("Encuesta", back_populates="preguntas")
+
+    def esEncuestaDeCliente(self):
+        return self.tieneRespuestaPosible()
+
+    def tieneRespuestaPosible(self):
+        return len(self.respuestasPosible) > 0
+    
+    def getDescripcion(self):
+        return self.descripcion

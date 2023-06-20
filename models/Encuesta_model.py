@@ -10,3 +10,16 @@ class Encuesta(base):
     descripcion = Column(String)
     fechaVigencia = Column(DateTime)
     preguntas = relationship("Pregunta", back_populates="encuesta")
+
+    def esEncuestaDeCliente(self):
+        for pregunta in self.preguntas:
+            return pregunta.esEncuestaDeCliente()
+        
+    def getDescripcionEncuesta(self):
+        return self.descripcion
+
+    def armarEncuesta(self):
+        descripciones = []
+        for pregunta in self.preguntas:
+           descripciones.append(pregunta.getDescripcion())
+        return descripciones

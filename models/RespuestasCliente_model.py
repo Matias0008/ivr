@@ -16,3 +16,6 @@ class RespuestaDeCliente(base):
 
     def getNombre(self):
         return self.nombre
+    
+    def getDescripcionRespuesta(self):
+        return self.respuestaPosible.getDescripcion()

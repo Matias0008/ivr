@@ -17,5 +17,9 @@ class CambioEstado(base):
     def getFechaHoraInicio(self):
         return self.fechaHoraInicio
 
-    def getNombreEstado(self):
-        return self.estado.nombre
+    def getNombreEstado(self): # 24
+        return self.estado.getNombre()
+    
+    def noTieneFechaHoraFin(self): # 22
+        # Si devuelve True entonces el atributo fechaHoraFin es nulo, o sea, no tiene fechaHoraFin (es el ultimo cambio de estado)
+        return self.fechaHoraFin is None

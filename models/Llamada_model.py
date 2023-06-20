@@ -11,7 +11,7 @@ class Llamada(base):
     descripcionOperador = Column(String, nullable=True)
     detalleAccionRequerida = Column(String, nullable=True)
     duracion = Column(Integer)
-    encuestaEnviada = Column(Boolean)
+    encuestaRespondida = Column(Boolean)
     observacionAuditor = Column(String, nullable=True)
     clienteDni = Column(Integer, ForeignKey('cliente.dni'))
     cliente = relationship("Cliente", back_populates="llamadas")
@@ -36,4 +36,21 @@ class Llamada(base):
         return self.duracion
     
     def tieneEncuestaRespondida(self):
-        return self.encuestaEnviada
+        return self.encuestaRespondida
+    
+    def getNombreClienteDeLlamadaYEstadoActual(self): # 19
+        nombreCliente = self.cliente.getNombreCompleto() # Llama al 20
+        nombreUltimoEstado = self.determinarUltimoEstado() # Llama al 21
+        return [nombreUltimoEstado, nombreCliente]
+
+    def determinarUltimoEstado(self): # 21
+        for cambioEstado in self.cambiosEstado:
+            if cambioEstado.noTieneFechaHoraFin(): # Llama al 22
+                # Aca ya tengo el ultimo cambio de estado
+                return cambioEstado.getNombreEstado() # Llama al 24
+    
+    def getRespuestas(self):
+        descripcionesRespuesta = []
+        for respuesta in self.respuestasDeCliente:
+            descripcionesRespuesta.append(respuesta.getDescripcionRespuesta())
+        return descripcionesRespuesta

@@ -14,3 +14,6 @@ class RespuestaPosible(base):
 
     def getDescripcion(self):
         return self.descripcion
+    
+    def getPregunta(self):
+        return self.pregunta

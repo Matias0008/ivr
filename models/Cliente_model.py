@@ -15,5 +15,5 @@ class Cliente(base):
     def esCliente(self, dni: Integer):
         return self.dni == dni
 
-    def getNombre(self):
+    def getNombreCompleto(self): # 20
         return f"{self.nombre} {self.apellido}"
