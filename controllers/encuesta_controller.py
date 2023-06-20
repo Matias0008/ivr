@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 import tkinter as tk
 
@@ -76,3 +77,15 @@ class EncuestaController:
     
     def mostrarEncuestas(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
         self.pantalla.mostrarEncuestas(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+    
+    def generarCSV(self,estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
+        print(estadoActual)
+        with open('views/view.csv', 'w', encoding="UTF-8") as fp:
+            contenido = f"""Nombre del cliente, Estado, Duracion\n{nombreCliente}, {estadoActual}, {duracion}\n"""
+
+            for x, pregunta in enumerate(descripcionPreguntas):
+                for y, respuesta in enumerate(descripcionRespuestas):
+                    contenido += f"Pregunta: {x + 1}: {pregunta}, Respuesta: {y + 1}: {respuesta}\n"
+
+            fp.write(contenido)
+            pass

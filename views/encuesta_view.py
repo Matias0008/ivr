@@ -16,6 +16,7 @@ class EncuestaBoundary:
     fechaFinDate: ttk.Label
     llamadasFrame: ttk.Frame
     llamadaSeleccionada = []
+    btnCancelar: ttk.Button
 
     def __init__(self, controller):
         self.controller = controller
@@ -36,6 +37,13 @@ class EncuestaBoundary:
         self.habilitarVentana()
 
     def habilitarVentana(self):
+        try:
+            self.llamadasFrame.destroy()
+            self.datosFrame.destroy()
+            self.opcionSalidaFrame.destroy()
+        except:
+            pass
+
         self.btnConsultarEncuesta = ttk.Button(self.frame, text="Consultar encuesta", style="ConsultarEncuesta.TButton", padding=15, command=self.controller.consultarEncuesta)
         self.btnConsultarEncuesta.pack(anchor="center", pady=100, padx=100)
         self.root.mainloop()
@@ -59,7 +67,6 @@ class EncuestaBoundary:
         self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
 
         self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame)
-        # self.fechaInicioDate.entry.config(state= "disabled")
         self.fechaInicioDate.grid(column=0, row=3)
         self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
         self.fechaInicioDate.button.configure(padding=6)
@@ -77,6 +84,9 @@ class EncuestaBoundary:
         # Boton para accionar la busqueda
         self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.tomarPeriodo)
         self.btnBuscar.grid(column=0, row=4, columnspan=2, pady=(40, 0), sticky="NSEW")
+
+        self.btnCancelar = ttk.Button(self.filtrosFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
+        self.btnCancelar.grid(column=0, row=5, pady=(20, 0), sticky="NSEW", columnspan=2)
     
     def mostrarMensajeError(self, message: str, title: str = ''):
         Messagebox.show_error(message=message, title=title)
@@ -88,9 +98,7 @@ class EncuestaBoundary:
 
     def mostrarLlamadas(self, llamadas: list[Llamada]):
         # Definicion de los headers de nuestra tabla
-        coldata = [
-        {"text": "ID", "stretch": False },
-        {"text": "Duracion", "stretch": True},
+        coldata = [{"text": "ID", "stretch": False }, {"text": "Duracion", "stretch": True},
         {"text": "DNI Cliente", "stretch": True},
         ]
         rowdata = [(llamada.id, llamada.duracion, llamada.clienteDni) for llamada in llamadas]
@@ -107,13 +115,14 @@ class EncuestaBoundary:
             bootstyle="primary",
             autofit=True
         )
+
         self.tableView.view.configure(selectmode="browse")
         self.tableView.view.bind("<<TreeviewSelect>>", lambda event: self.tomarLlamada(llamadas=llamadas))
         self.tableView.grid(column=0, row=0, padx=50, pady=50)
 
         # Configuraciones para el boton volver
-        self.btnVolver = ttk.Button(self.llamadasFrame ,text="Volver", command=self.habilitarFiltrosPorPeriodo, bootstyle="danger")
-        self.btnVolver.grid(column=0, row=2, sticky="NSEW", padx=50, pady=50)
+        self.btnVolver = ttk.Button(self.llamadasFrame ,text="Volver", command=self.habilitarFiltrosPorPeriodo, bootstyle="warning")
+        self.btnVolver.grid(column=0, row=2, padx=(50, 150), pady=(10, 50), sticky="W")
 
         self.filtrosFrame.destroy()
     
@@ -124,14 +133,19 @@ class EncuestaBoundary:
             if llamada.id == llamadaId:
                 self.llamadaSeleccionada = llamada
         
-        self.btnTomarLlamada = ttk.Button(self.llamadasFrame, text="Tomar llamada", command=lambda: self.controller.tomarLlamada(self.llamadaSeleccionada))
+        self.btnTomarLlamada = ttk.Button(self.llamadasFrame, text="Tomar llamada", command=lambda: self.controller.tomarLlamada(self.llamadaSeleccionada), bootstyle="success")
         self.btnTomarLlamada.grid(column=0, row=1, sticky="NSEW", padx=50)
+        self.btnCancelar = ttk.Button(self.llamadasFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
+        self.btnCancelar.grid(column=0, row=2, padx=(150, 50), pady=(10, 50), sticky="EW")
 
     def mostrarEncuestas(self,estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
 
         # Creacion de un nuevo frame
         self.datosFrame = ttk.Labelframe(self.frame, text="Datos de la llamada", padding=20)
         self.datosFrame.grid(column=0, row=0, padx=50, pady=50)
+
+        self.opcionSalidaFrame = ttk.Label(self.frame)
+        self.opcionSalidaFrame.grid(column=0, row=5, padx=50, pady=(10, 50))
 
         self.nombreClienteLbl = ttk.Label(self.datosFrame, text=f"Nombre del cliente: {nombreCliente}")
         self.nombreClienteLbl.grid(column=0, row=0)
@@ -147,5 +161,14 @@ class EncuestaBoundary:
 
         self.descripcionRtaLbl = ttk.Label(self.datosFrame, text=f"Respuesta: {', '.join(descripcionRespuestas)}")
         self.descripcionRtaLbl.grid(column=0, row=4)
+
+        self.btnGenerarCsv = ttk.Button(self.opcionSalidaFrame ,text="Generar CSV", command=lambda: self.controller.generarCSV(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas))
+        self.btnGenerarCsv.grid(column=0, row=0, padx=(0, 5), sticky="NSEW")
+
+        self.btnImprimir = ttk.Button(self.opcionSalidaFrame ,text="Imprimir")
+        self.btnImprimir.grid(column=1, row=0, padx=(0, 5), sticky="NSEW")
+
+        self.btnCancelar = ttk.Button(self.opcionSalidaFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
+        self.btnCancelar.grid(column=2, row=0, padx=(5, 0), sticky="NSEW")
 
         self.llamadasFrame.destroy()
