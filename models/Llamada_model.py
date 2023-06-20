@@ -18,22 +18,18 @@ class Llamada(base):
     cambiosEstado = relationship("CambioEstado", back_populates="llamada")
 
     def esDePeriodo(self, fechaInicio: String, fechaFin: String):
-        ultimoCambioEstado = self.cambiosEstado[-1]
-        fechaHoraInicio = ultimoCambioEstado.getFechaHoraInicio()
-        return fechaInicio <= fechaHoraInicio <= fechaFin
+        fechaCreacion = self.determinarEstadoInicial()
+        return fechaInicio <= fechaCreacion <= fechaFin
     
     def determinarEstadoInicial(self):
         fechaHoraInicioMenor = None
-        primerCambioEstado = None
 
         for cambioEstado in self.cambiosEstado:
             fechaHoraInicio = cambioEstado.getFechaHoraInicio()
             if fechaHoraInicioMenor is None or fechaHoraInicio < fechaHoraInicioMenor:
                 fechaHoraInicioMenor = fechaHoraInicio
-                primerCambioEstado = cambioEstado
 
-        estadoInicial = primerCambioEstado.getNombreEstado()
-        return estadoInicial
+        return fechaHoraInicioMenor
 
     def getDuracion(self):
         return self.duracion
