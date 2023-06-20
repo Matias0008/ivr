@@ -1,6 +1,8 @@
 import tkinter as tk
-import style.ttkbootstrap as ttk
-from style.ttkbootstrap.tableview import Tableview
+import ttkbootstrap as ttk
+
+from ttkbootstrap.tableview import Tableview
+from ttkbootstrap.dialogs.dialogs import Messagebox
 
 from models.Llamada_model import Llamada
 
@@ -13,6 +15,8 @@ class EncuestaBoundary:
     fechaInicioDate: ttk.DateEntry
     fechaFinLbl: ttk.Label
     fechaFinDate: ttk.Label
+    llamadasFrame: ttk.Frame
+    llamadaSeleccionada = []
 
     def __init__(self, controller):
         self.controller = controller
@@ -38,6 +42,10 @@ class EncuestaBoundary:
         self.root.mainloop()
 
     def habilitarFiltrosPorPeriodo(self):
+        try:
+            self.llamadasFrame.destroy()
+        except:
+            pass
         self.btnConsultarEncuesta.destroy()
         self.filtrosFrame = ttk.Frame(self.frame)
         self.filtrosFrame.grid(column=0, row=0, pady=50, padx=50)
@@ -68,6 +76,9 @@ class EncuestaBoundary:
         # Boton para accionar la busqueda
         self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.tomarPeriodo)
         self.btnBuscar.grid(column=0, row=4, columnspan=2, pady=(40, 0), sticky="NSEW")
+    
+    def mostrarMensajeError(self, message: str, title: str = ''):
+        Messagebox.show_error(message=message, title=title)
 
     def tomarPeriodo(self):
         fechaInicio = self.fechaInicioDate.entry.get()
@@ -75,28 +86,40 @@ class EncuestaBoundary:
         self.controller.tomarPeriodo(fechaInicio, fechaFin)
 
     def mostrarLlamadas(self, llamadas: list[Llamada]):
-
+        # Definicion de los headers de nuestra tabla
         coldata = [
         {"text": "ID", "stretch": False },
-        {"text": "Nombre", "stretch": True},
-        {"text": "Apellido", "stretch": True},
+        {"text": "Duracion", "stretch": True},
+        {"text": "DNI Cliente", "stretch": True},
         ]
+        rowdata = [(llamada.id, llamada.duracion, llamada.clienteDni) for llamada in llamadas]
 
-        rowdata = [] 
-        self.clientesFrame = ttk.Frame(self.frame)
-        self.clientesFrame.grid(column=0, row=0)
+        self.llamadasFrame = ttk.Frame(self.frame)
+        self.llamadasFrame.grid(column=0, row=0)
+
         self.tableView = Tableview(
-            master=self.clientesFrame,
+            master=self.llamadasFrame,
             coldata=coldata,
             rowdata=rowdata,
             paginated=True,
             searchable=True,
             bootstyle="primary",
-            autofit=True
+            autofit=True,
         )
-
+        self.tableView.view.configure(selectmode="browse")
+        self.tableView.view.bind("<<TreeviewSelect>>", lambda event: self.tomarLlamada(llamadas=llamadas))
         self.tableView.grid(column=0, row=0, padx=50, pady=50)
+
+        # Configuraciones para el boton volver
+        self.btnVolver = ttk.Button(self.llamadasFrame ,text="Volver", command=self.habilitarFiltrosPorPeriodo, bootstyle="danger")
+        self.btnVolver.grid(column=0, row=1, sticky="NSEW", padx=50, pady=50)
+
         self.filtrosFrame.destroy()
+    
+    def tomarLlamada(self, llamadas: list[Llamada]):
+        seleccion = self.tableView.view.selection()[0]
+        llamadaId = self.tableView.view.item(seleccion)['values'][0]
+        self.controller.tomarLlamada(llamadas, llamadaId)
 
     def mostrarEncuestas(self):
         self.controller.mostrarEncuestas()

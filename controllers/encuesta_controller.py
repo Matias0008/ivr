@@ -10,6 +10,7 @@ class EncuestaController:
     fechaFin: str
     fechaInicio: str
     llamadasDentroDePeriodo: List[Llamada] = []
+    llamadaSeleccionada: Llamada = []
 
     def setPantalla(self, pantalla: EncuestaBoundary):
         self.pantalla = pantalla
@@ -27,7 +28,20 @@ class EncuestaController:
         db = DatabaseController()
         db.connect()
         llamadas: List[Llamada] = db.session.query(Llamada).all()
+
+        # Conseguimos las llamas que esten dentro de un periodo
         for llamada in llamadas:
             if llamada.esDePeriodo(fechaInicio, fechaFin):
                 self.llamadasDentroDePeriodo.append(llamada)
-        self.pantalla.mostrarLlamadas([])
+
+        # Si no encontramos ninguna llamada lanzamos un mensaje de error
+        if (len(self.llamadasDentroDePeriodo) == 0):
+            self.pantalla.mostrarMensajeError(message="No hay llamadas dentro del periodo", title="No hay llamadas")
+        else:
+            self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
+
+    def tomarLlamada(self, llamadas: list[Llamada], llamadaId):
+        # Obtenemos la clase Llamada, ya que la seleccion solo nos brinda la id de la misma.
+        for llamada in llamadas:
+            if llamada.id == llamadaId:
+                self.llamadaSeleccionada = llamada
