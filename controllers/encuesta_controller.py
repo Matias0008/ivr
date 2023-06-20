@@ -28,3 +28,4 @@ class EncuestaController:
         for llamada in llamadas:
             if llamada.esDePeriodo(fechaInicio, fechaFin):
                 self.llamadasDentroDePeriodo.append(llamada)
+        self.pantalla.mostrarLlamadas([])

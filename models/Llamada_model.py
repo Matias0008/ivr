@@ -34,3 +34,6 @@ class Llamada(base):
 
     def getDuracion(self):
         return self.duracion
+    
+    def tieneEncuestaRespondida(self):
+        return self.encuestaEnviada

@@ -2,6 +2,8 @@ import tkinter as tk
 import style.ttkbootstrap as ttk
 from style.ttkbootstrap.tableview import Tableview
 
+from models.Llamada_model import Llamada
+
 class EncuestaBoundary:
     frame: ttk.Frame
     btnConsultarEncuesta: ttk.Button
@@ -72,7 +74,7 @@ class EncuestaBoundary:
         fechaFin = self.fechaFinDate.entry.get()
         self.controller.tomarPeriodo(fechaInicio, fechaFin)
 
-    def buscarLlamadas(self):
+    def mostrarLlamadas(self, llamadas: list[Llamada]):
 
         coldata = [
         {"text": "ID", "stretch": False },
