@@ -8,6 +8,7 @@ if __name__ == "__main__":
     load_dotenv()
     db = DatabaseController()
     db.insertData()
+
     encuestaGestor = EncuestaController()
     encuestaPantalla = EncuestaBoundary(encuestaGestor)
     encuestaGestor.setPantalla(encuestaPantalla)

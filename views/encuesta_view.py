@@ -3,7 +3,6 @@ import ttkbootstrap as ttk
 
 from ttkbootstrap.tableview import Tableview
 from ttkbootstrap.dialogs.dialogs import Messagebox
-
 from models.Llamada_model import Llamada
 
 class EncuestaBoundary:
@@ -60,6 +59,7 @@ class EncuestaBoundary:
         self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
 
         self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame)
+        # self.fechaInicioDate.entry.config(state= "disabled")
         self.fechaInicioDate.grid(column=0, row=3)
         self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
         self.fechaInicioDate.button.configure(padding=6)
@@ -69,6 +69,7 @@ class EncuestaBoundary:
         self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
 
         self.fechaFinDate = ttk.DateEntry(self.filtrosFrame)
+        # self.fechaFinDate.entry.config(state= "disabled")
         self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
         self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
         self.fechaFinDate.button.configure(padding=6)
@@ -104,7 +105,7 @@ class EncuestaBoundary:
             paginated=True,
             searchable=True,
             bootstyle="primary",
-            autofit=True,
+            autofit=True
         )
         self.tableView.view.configure(selectmode="browse")
         self.tableView.view.bind("<<TreeviewSelect>>", lambda event: self.tomarLlamada(llamadas=llamadas))
@@ -112,14 +113,39 @@ class EncuestaBoundary:
 
         # Configuraciones para el boton volver
         self.btnVolver = ttk.Button(self.llamadasFrame ,text="Volver", command=self.habilitarFiltrosPorPeriodo, bootstyle="danger")
-        self.btnVolver.grid(column=0, row=1, sticky="NSEW", padx=50, pady=50)
+        self.btnVolver.grid(column=0, row=2, sticky="NSEW", padx=50, pady=50)
 
         self.filtrosFrame.destroy()
     
     def tomarLlamada(self, llamadas: list[Llamada]):
         seleccion = self.tableView.view.selection()[0]
         llamadaId = self.tableView.view.item(seleccion)['values'][0]
-        self.controller.tomarLlamada(llamadas, llamadaId)
+        for llamada in llamadas:
+            if llamada.id == llamadaId:
+                self.llamadaSeleccionada = llamada
+        
+        self.btnTomarLlamada = ttk.Button(self.llamadasFrame, text="Tomar llamada", command=lambda: self.controller.tomarLlamada(self.llamadaSeleccionada))
+        self.btnTomarLlamada.grid(column=0, row=1, sticky="NSEW", padx=50)
 
-    def mostrarEncuestas(self):
-        self.controller.mostrarEncuestas()
+    def mostrarEncuestas(self,estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
+
+        # Creacion de un nuevo frame
+        self.datosFrame = ttk.Labelframe(self.frame, text="Datos de la llamada", padding=20)
+        self.datosFrame.grid(column=0, row=0, padx=50, pady=50)
+
+        self.nombreClienteLbl = ttk.Label(self.datosFrame, text=f"Nombre del cliente: {nombreCliente}")
+        self.nombreClienteLbl.grid(column=0, row=0)
+
+        self.estadoActualLbl = ttk.Label(self.datosFrame, text=f"Estado actual: {estadoActual}")
+        self.estadoActualLbl.grid(column=0, row=1)
+
+        self.duracionLbl = ttk.Label(self.datosFrame, text=f"Duracion de la llamada: {duracion}")
+        self.duracionLbl.grid(column=0, row=2)
+
+        self.preguntasLbl = ttk.Label(self.datosFrame, text=f"Pregunta: {', '.join(descripcionPreguntas)}")
+        self.preguntasLbl.grid(column=0, row=3)
+
+        self.descripcionRtaLbl = ttk.Label(self.datosFrame, text=f"Respuesta: {', '.join(descripcionRespuestas)}")
+        self.descripcionRtaLbl.grid(column=0, row=4)
+
+        self.llamadasFrame.destroy()

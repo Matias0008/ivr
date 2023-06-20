@@ -13,7 +13,6 @@ from models.RespuestaPosible_model import RespuestaPosible
 from models.Encuesta_model import Encuesta
 from models.Pregunta_model import Pregunta
 
-
 from models.Models import base
 
 class DatabaseController:
@@ -59,18 +58,18 @@ class DatabaseController:
             Estado(nombre='Pendiente de escucha'),
             Estado(nombre='Correcta'),
             Estado(nombre='Con observacion'),
-            CambioEstado(fechaHoraInicio='2023-05-25 12:12:36', fechaHoraFin='2023-05-25 12:13:36', estadoId = 1, llamadaId = 1),
-            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 4, llamadaId = 1),
-            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 2, llamadaId = 1),
-            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 6, llamadaId = 1),
-            CambioEstado(fechaHoraInicio='2023-05-25 12:19:36', fechaHoraFin='2023-05-25 12:20:36', estadoId = 7, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-06-25 12:12:36', fechaHoraFin='2023-06-25 12:13:36', estadoId = 1, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin='2023-06-25 12:20:36', estadoId = 4, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin='2023-06-25 12:20:36', estadoId = 2, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin='2023-06-25 12:20:36', estadoId = 6, llamadaId = 1),
+            CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin=None, estadoId = 7, llamadaId = 1),
             CambioEstado(fechaHoraInicio='2023-05-25 12:00:00', fechaHoraFin=None, estadoId = 1, llamadaId = 2),
             CambioEstado(fechaHoraInicio='2023-06-30 12:19:36', fechaHoraFin=None, estadoId = 1, llamadaId = 3),
             CambioEstado(fechaHoraInicio='2023-08-19 12:19:36', fechaHoraFin=None, estadoId = 1, llamadaId = 4),
-            Llamada(duracion=60, descripcionOperador='Descripcion del operador 1', detalleAccionRequerida='Se cancela tarjeta por robo', encuestaEnviada=False, observacionAuditor='', clienteDni=44741306),
-            Llamada(duracion=30, descripcionOperador='Descripcion del operador 2', detalleAccionRequerida='Se pausa tarjeta por extravío', encuestaEnviada=False, observacionAuditor='', clienteDni=35603215),
-            Llamada(duracion=20, descripcionOperador='Descripcion del operador 3', detalleAccionRequerida='Se renueva la tarjeta por extravío', encuestaEnviada=True, observacionAuditor='', clienteDni=45789763),
-            Llamada(duracion=15, descripcionOperador='Descripcion del operador 4', detalleAccionRequerida='Se registra la notificación de robo', encuestaEnviada=True, observacionAuditor='', clienteDni=44741306),
+            Llamada(duracion=60, descripcionOperador='Descripcion del operador 1', detalleAccionRequerida='Se cancela tarjeta por robo', encuestaRespondida=True, observacionAuditor='', clienteDni=44741306),
+            Llamada(duracion=30, descripcionOperador='Descripcion del operador 2', detalleAccionRequerida='Se pausa tarjeta por extravío', encuestaRespondida=True, observacionAuditor='', clienteDni=35603215),
+            Llamada(duracion=20, descripcionOperador='Descripcion del operador 3', detalleAccionRequerida='Se renueva la tarjeta por extravío', encuestaRespondida=True, observacionAuditor='', clienteDni=45789763),
+            Llamada(duracion=15, descripcionOperador='Descripcion del operador 4', detalleAccionRequerida='Se registra la notificación de robo', encuestaRespondida=True, observacionAuditor='', clienteDni=44741306),
             Encuesta(descripcion = 'Atención al cliente', fechaVigencia = '2023-05-24 12:12:36'),
             Encuesta(descripcion = 'Servicio', fechaVigencia = '2023-03-21 20:31:41'),
             Encuesta(descripcion = 'Conformidad', fechaVigencia = '2023-03-21 20:31:41'),
@@ -88,9 +87,10 @@ class DatabaseController:
             RespuestaPosible(preguntaId = 3, descripcion = '3'),
             RespuestaPosible(preguntaId = 3, descripcion = '4'),
             RespuestaPosible(preguntaId = 3, descripcion = '5'),
-            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 2, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 8, llamadaId=1),
             RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 10, llamadaId=4),
-            RespuestaDeCliente(fechaEncuesta='2023-05-25', respuestaPosibleId = 4, llamadaId=2)
+            RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 9, llamadaId=2),
+            RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 7, llamadaId=3)
         ])
         self.session.commit()
 

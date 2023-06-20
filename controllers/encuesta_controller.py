@@ -4,6 +4,7 @@ import tkinter as tk
 from views.encuesta_view import *
 from controllers.db_controller import *
 from models.Llamada_model import Llamada
+from models.Encuesta_model import Encuesta
 
 class EncuestaController:
     pantalla: EncuestaBoundary
@@ -19,8 +20,14 @@ class EncuestaController:
         self.pantalla.habilitarFiltrosPorPeriodo()
     
     def tomarPeriodo(self, fechaInicio: str, fechaFin: str):
-        self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%Y")
-        self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%Y")
+        try:
+            self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%Y")
+            self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%Y")
+            if (self.fechaFin < self.fechaInicio):
+                return self.pantalla.mostrarMensajeError(message="La fecha fin es menor que la fecha de inicio", title="Fecha fin incorrecta")
+        except:
+            return self.pantalla.mostrarMensajeError(message="El periodo ingreso es incorrecto", title="Periodo incorrecto")
+
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
 
     def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str):
@@ -31,7 +38,7 @@ class EncuestaController:
 
         # Conseguimos las llamas que esten dentro de un periodo
         for llamada in llamadas:
-            if llamada.esDePeriodo(fechaInicio, fechaFin):
+            if llamada.esDePeriodo(fechaInicio, fechaFin) and llamada.tieneEncuestaRespondida():
                 self.llamadasDentroDePeriodo.append(llamada)
 
         # Si no encontramos ninguna llamada lanzamos un mensaje de error
@@ -40,8 +47,32 @@ class EncuestaController:
         else:
             self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
 
-    def tomarLlamada(self, llamadas: list[Llamada], llamadaId):
-        # Obtenemos la clase Llamada, ya que la seleccion solo nos brinda la id de la misma.
-        for llamada in llamadas:
-            if llamada.id == llamadaId:
-                self.llamadaSeleccionada = llamada
+    def tomarLlamada(self, llamadaSeleccionada: Llamada):
+        self.llamadaSeleccionada = llamadaSeleccionada
+        self.obtenerDatosLlamada()
+
+    def obtenerDatosLlamada(self):
+        estadoActual, nombreCliente = self.llamadaSeleccionada.getNombreClienteDeLlamadaYEstadoActual()
+        duracion = self.llamadaSeleccionada.getDuracion()
+        descripcionEncuesta, descripcionPreguntas, descripcionRespuestas = self.obtenerDatosEncuesta()
+        self.mostrarEncuestas(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+    
+    def obtenerDatosEncuesta(self):
+        descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
+
+        # Me conecto a la base de datos para obtener todas las encuestas
+        db = DatabaseController()
+        db.connect()
+
+        encuestaCliente = []
+        encuestas = db.session.query(Encuesta).all()
+        for encuesta in encuestas:
+            if encuesta.esEncuestaDeCliente():
+                encuestaCliente = encuesta
+
+        descripcionEncuesta = encuestaCliente.getDescripcionEncuesta()
+        descripcionPreguntas = encuestaCliente.armarEncuesta()
+        return [descripcionEncuesta, descripcionPreguntas, descripcionRespuestas]
+    
+    def mostrarEncuestas(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
+        self.pantalla.mostrarEncuestas(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
