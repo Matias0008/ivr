@@ -8,7 +8,7 @@ class CambioEstado(base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     fechaHoraInicio = Column(DateTime, default=func.now())
-    fechaHoraFin = Column(DateTime)
+    fechaHoraFin = Column(DateTime, nullable=True)
     estadoId = Column(Integer, ForeignKey('estado.id'))
     estado = relationship("Estado", back_populates="cambiosEstado")
     llamadaId = Column(Integer, ForeignKey('llamada.id'))
