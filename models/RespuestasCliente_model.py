@@ -11,7 +11,8 @@ class RespuestaDeCliente(base):
     descripcion = Column(String)
     respuestaPosibleId = Column(Integer, ForeignKey('respuestaposible.id'))
     respuestaPosible = relationship("RespuestaPosible", back_populates="respuestasDeCliente")
-
+    llamadaId = Column(Integer, ForeignKey('llamada.id'))
+    llamada = relationship("Llamada", back_populates="respuestasDeCliente")
 
     def getNombre(self):
         return self.nombre
