@@ -8,14 +8,15 @@ class Llamada(base):
     __tablename__ = "llamada"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
-    descripcionOperador = Column(String)
-    detalleAccionRequerida = Column(String)
+    descripcionOperador = Column(String, nullable=True)
+    detalleAccionRequerida = Column(String, nullable=True)
     duracion = Column(Integer)
     encuestaEnviada = Column(Boolean)
-    observacionAuditor = Column(String)
+    observacionAuditor = Column(String, nullable=True)
     clienteDni = Column(Integer, ForeignKey('cliente.dni'))
     cliente = relationship("Cliente", back_populates="llamadas")
     cambiosEstado = relationship("CambioEstado", back_populates="llamada")
+    respuestasDeCliente = relationship("RespuestaDeCliente", back_populates="llamada")
 
     def esDePeriodo(self, fechaInicio: String, fechaFin: String):
         fechaCreacion = self.determinarEstadoInicial()

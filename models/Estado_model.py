@@ -8,7 +8,7 @@ class Estado(base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     nombre = Column(String)
-    descripcion = Column(String)
+    descripcion = Column(String, nullable=True)
     cambiosEstado = relationship("CambioEstado", back_populates="estado")
 
     def getNombre(self):
