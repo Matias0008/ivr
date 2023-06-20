@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
 
 from models.Base import base
-from models.CambioEstado_model import CambioEstado
 
 class Llamada(base):
     __tablename__ = "llamada"
