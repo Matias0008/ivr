@@ -1,6 +1,5 @@
 import tkinter as tk
 import ttkbootstrap as ttk
-from datetime import datetime
 
 from ttkbootstrap.tableview import Tableview
 from ttkbootstrap.dialogs.dialogs import Messagebox
@@ -27,7 +26,7 @@ class EncuestaBoundary:
         font = ("JetBrains Mono", 14, "bold")
         self.root = ttk.Window(themename="flatly")
         self.root.title("Encuesta boundary")
-        self.root.geometry("700x650")
+        self.root.geometry("1280x720")
         self.root.resizable(0, 0)
 
         self.style = ttk.Style()
@@ -53,8 +52,10 @@ class EncuestaBoundary:
         self.btnConsultarEncuesta.pack(anchor="center", pady=100, padx=100)
         self.root.mainloop()
     
-    def onEntryChange(self):
+    def tomarFechaInicio(self):
         self.fechaInicioTxt = self.fechaInicioDate.entry.get()
+
+    def tomarFechaFin(self):
         self.fechaFinTxt = self.fechaFinDate.entry.get()
 
     def habilitarFiltrosPorPeriodo(self):
@@ -74,7 +75,7 @@ class EncuestaBoundary:
             self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
 
             # Definicion del DateEntry para la fecha de inicio
-            self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame, onChange=self.onEntryChange)
+            self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame, onChange=self.tomarFechaInicio)
             self.fechaInicioDate.entry.delete(0, tk.END)
             self.fechaInicioDate.entry.insert(tk.END, self.fechaInicioTxt)
             self.fechaInicioDate.entry.configure(state="readonly")
@@ -88,7 +89,7 @@ class EncuestaBoundary:
             self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
 
             # Definicion del DateEntry para la fecha de inicio
-            self.fechaFinDate = ttk.DateEntry(self.filtrosFrame, onChange=self.onEntryChange)
+            self.fechaFinDate = ttk.DateEntry(self.filtrosFrame, onChange=self.tomarFechaFin)
             self.fechaFinDate.entry.delete(0, tk.END)
             self.fechaFinDate.entry.insert(tk.END, self.fechaFinTxt)
             self.fechaFinDate.entry.configure(state="readonly")
@@ -108,7 +109,8 @@ class EncuestaBoundary:
             self.fechaInicioLbl = ttk.Label(self.filtrosFrame, text="Fecha inicio")
             self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
 
-            self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame)
+            self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame, onChange=self.tomarFechaInicio)
+            self.fechaInicioTxt = self.fechaInicioDate.entry.get()
             self.fechaInicioDate.entry.configure(state="readonly")
             self.fechaInicioDate.grid(column=0, row=3)
             self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
@@ -118,7 +120,7 @@ class EncuestaBoundary:
             self.fechaFinLbl = ttk.Label(self.filtrosFrame, text="Fecha fin")
             self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
 
-            self.fechaFinDate = ttk.DateEntry(self.filtrosFrame, onChange=self.onEntryChange)
+            self.fechaFinDate = ttk.DateEntry(self.filtrosFrame, onChange=self.tomarFechaFin)
             self.fechaFinDate.entry.configure(state="readonly")
             self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
             self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
@@ -195,7 +197,7 @@ class EncuestaBoundary:
     def mostrarEncuestas(self,estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
 
         # Creacion de un nuevo frame
-        self.datosFrame = ttk.Labelframe(self.frame, text="Datos de la llamada", padding=20)
+        self.datosFrame = ttk.LabelFrame(self.frame, text="Datos de la llamada")
         self.datosFrame.grid(column=0, row=0, padx=50, pady=50)
 
         self.opcionSalidaFrame = ttk.Labelframe(self.frame, text="Opciones", padding=20)
@@ -204,7 +206,7 @@ class EncuestaBoundary:
         self.grupoBotones.pack()
 
         self.nombreClienteLbl = ttk.Label(self.datosFrame, text=f"Nombre del cliente: {nombreCliente}")
-        self.nombreClienteLbl.grid(column=0, row=0)
+        self.nombreClienteLbl.grid(column=0, row=0, pady=(20, 0))
 
         self.estadoActualLbl = ttk.Label(self.datosFrame, text=f"Estado actual: {estadoActual}")
         self.estadoActualLbl.grid(column=0, row=1)
@@ -212,11 +214,24 @@ class EncuestaBoundary:
         self.duracionLbl = ttk.Label(self.datosFrame, text=f"Duracion de la llamada: {duracion}")
         self.duracionLbl.grid(column=0, row=2)
 
-        self.preguntasLbl = ttk.Label(self.datosFrame, text=f"Pregunta: {', '.join(descripcionPreguntas)}")
-        self.preguntasLbl.grid(column=0, row=3)
+        # Tenemos un array de preguntas
+        # Definimos la estructura de la tabla
+        colummns = ("Pregunta", "Respuesta")
+        self.treeviewPreguntas = ttk.Treeview(self.datosFrame, columns=colummns, show="headings", bootstyle="success", selectmode="none")
+        self.treeviewPreguntas.grid(column=0, row=3, pady=(20, 0))
+        self.treeviewPreguntas.column(0, width=650)
+        self.treeviewPreguntas.column(1, width=250)
+        self.treeviewPreguntas.heading("Pregunta", text="Pregunta")
+        self.treeviewPreguntas.heading("Respuesta", text="Respuesta")
 
-        self.descripcionRtaLbl = ttk.Label(self.datosFrame, text=f"Respuesta: {', '.join(descripcionRespuestas)}")
-        self.descripcionRtaLbl.grid(column=0, row=4)
+        # Ahora tenemos que llenar de datos
+        treeviewData = []
+        for indice, pregunta in enumerate(descripcionPreguntas):
+            treeviewData.append((pregunta, descripcionRespuestas[indice]))
+
+        # Ahora debemos insertar esos datos en la tabla
+        for data in treeviewData:
+            self.treeviewPreguntas.insert("", tk.END, values=data)
 
         self.grupoBotonesResultados = ttk.Label(self.grupoBotones)
         self.grupoBotonesResultados.pack()
