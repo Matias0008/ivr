@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 import tkinter as tk
 
@@ -25,9 +24,9 @@ class EncuestaController:
             self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%Y")
             self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%Y")
             if (self.fechaFin < self.fechaInicio):
-                return self.pantalla.mostrarMensajeError(message="La fecha fin es menor que la fecha de inicio", title="Fecha fin incorrecta")
+                return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha fin es menor que la fecha de inicio", title="Fecha fin incorrecta")
         except:
-            return self.pantalla.mostrarMensajeError(message="El periodo ingreso es incorrecto", title="Periodo incorrecto")
+            return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="El periodo ingreso es incorrecto", title="Periodo incorrecto")
 
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
 
@@ -44,17 +43,20 @@ class EncuestaController:
 
         # Si no encontramos ninguna llamada lanzamos un mensaje de error
         if (len(self.llamadasDentroDePeriodo) == 0):
-            self.pantalla.mostrarMensajeError(message="No hay llamadas dentro del periodo", title="No hay llamadas")
-        else:
-            self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
+            return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="No hay llamadas dentro del periodo", title="No hay llamadas")
+        
+        self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
 
     def tomarLlamada(self, llamadaSeleccionada: Llamada):
         self.llamadaSeleccionada = llamadaSeleccionada
         self.obtenerDatosLlamada()
 
     def obtenerDatosLlamada(self):
+        # Primero obtenemos los datos de la llamada
         estadoActual, nombreCliente = self.llamadaSeleccionada.getNombreClienteDeLlamadaYEstadoActual()
         duracion = self.llamadaSeleccionada.getDuracion()
+
+        # Luego obtenemos los datos de la encuesta
         descripcionEncuesta, descripcionPreguntas, descripcionRespuestas = self.obtenerDatosEncuesta()
         self.mostrarEncuestas(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
     
@@ -64,9 +66,9 @@ class EncuestaController:
         # Me conecto a la base de datos para obtener todas las encuestas
         db = DatabaseController()
         db.connect()
-
         encuestaCliente = []
         encuestas = db.session.query(Encuesta).all()
+
         for encuesta in encuestas:
             if encuesta.esEncuestaDeCliente():
                 encuestaCliente = encuesta

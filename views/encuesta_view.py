@@ -1,5 +1,6 @@
 import tkinter as tk
 import ttkbootstrap as ttk
+from datetime import datetime
 
 from ttkbootstrap.tableview import Tableview
 from ttkbootstrap.dialogs.dialogs import Messagebox
@@ -14,6 +15,8 @@ class EncuestaBoundary:
     fechaInicioDate: ttk.DateEntry
     fechaFinLbl: ttk.Label
     fechaFinDate: ttk.Label
+    fechaInicioTxt: str
+    fechaFinTxt: str 
     llamadasFrame: ttk.Frame
     llamadaSeleccionada = []
     btnCancelar: ttk.Button
@@ -24,6 +27,7 @@ class EncuestaBoundary:
         font = ("JetBrains Mono", 14, "bold")
         self.root = ttk.Window(themename="flatly")
         self.root.title("Encuesta boundary")
+        self.root.geometry("700x650")
         self.root.resizable(0, 0)
 
         self.style = ttk.Style()
@@ -31,13 +35,14 @@ class EncuestaBoundary:
 
         # Frame principal
         self.frame = tk.Frame(self.root)
-        self.frame.pack()
+        self.frame.place(relx=0.5, rely=0.5, anchor="center")
 
     def opcionConsultarEncuesta(self):
         self.habilitarVentana()
 
     def habilitarVentana(self):
         try:
+            self.filtrosFrame.destroy()
             self.llamadasFrame.destroy()
             self.datosFrame.destroy()
             self.opcionSalidaFrame.destroy()
@@ -47,39 +52,82 @@ class EncuestaBoundary:
         self.btnConsultarEncuesta = ttk.Button(self.frame, text="Consultar encuesta", style="ConsultarEncuesta.TButton", padding=15, command=self.controller.consultarEncuesta)
         self.btnConsultarEncuesta.pack(anchor="center", pady=100, padx=100)
         self.root.mainloop()
+    
+    def onEntryChange(self):
+        self.fechaInicioTxt = self.fechaInicioDate.entry.get()
+        self.fechaFinTxt = self.fechaFinDate.entry.get()
 
     def habilitarFiltrosPorPeriodo(self):
         try:
             self.llamadasFrame.destroy()
+            self.filtrosFrame = ttk.Frame(self.frame)
+            self.filtrosFrame.grid(column=0, row=0, pady=50, padx=50)
+
+            """
+            Este renderizado indica que ya se ingreso una vez y por lo tanto se renderiza nuevamente pero pudiendo insertar los valores como fechaInicioTxt y fechaFinTxt
+            Es decir, que se toco el boton de volver, por eso la necesidad de insertar el periodo. 
+            """
+
+            # Configuracion para la fecha inicio
+            # Definicion del label para la fecha inicio
+            self.fechaInicioLbl = ttk.Label(self.filtrosFrame, text="Fecha inicio")
+            self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
+
+            # Definicion del DateEntry para la fecha de inicio
+            self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame, onChange=self.onEntryChange)
+            self.fechaInicioDate.entry.delete(0, tk.END)
+            self.fechaInicioDate.entry.insert(tk.END, self.fechaInicioTxt)
+            self.fechaInicioDate.entry.configure(state="readonly")
+            self.fechaInicioDate.grid(column=0, row=3)
+            self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
+            self.fechaInicioDate.button.configure(padding=6)
+            
+            # Configuracion para la fecha fin
+            # Definicion del label para la fecha fin
+            self.fechaFinLbl = ttk.Label(self.filtrosFrame, text="Fecha fin")
+            self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
+
+            # Definicion del DateEntry para la fecha de inicio
+            self.fechaFinDate = ttk.DateEntry(self.filtrosFrame, onChange=self.onEntryChange)
+            self.fechaFinDate.entry.delete(0, tk.END)
+            self.fechaFinDate.entry.insert(tk.END, self.fechaFinTxt)
+            self.fechaFinDate.entry.configure(state="readonly")
+            self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
+            self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
+            self.fechaFinDate.button.configure(padding=6)
         except:
-            pass
-        self.btnConsultarEncuesta.destroy()
-        self.filtrosFrame = ttk.Frame(self.frame)
-        self.filtrosFrame.grid(column=0, row=0, pady=50, padx=50)
+            """
+            Este flujo se renderiza la primera vez que se ingresa a la aplicacion, es lo normal sin que se presione el boton de volver
+            """
+
+            self.btnConsultarEncuesta.destroy()
+            self.filtrosFrame = ttk.Frame(self.frame)
+            self.filtrosFrame.grid(column=0, row=0, pady=50, padx=50)
+
+            # Configuracion para la fecha desde
+            self.fechaInicioLbl = ttk.Label(self.filtrosFrame, text="Fecha inicio")
+            self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
+
+            self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame)
+            self.fechaInicioDate.entry.configure(state="readonly")
+            self.fechaInicioDate.grid(column=0, row=3)
+            self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
+            self.fechaInicioDate.button.configure(padding=6)
+
+            # Configuracion para la fecha fin
+            self.fechaFinLbl = ttk.Label(self.filtrosFrame, text="Fecha fin")
+            self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
+
+            self.fechaFinDate = ttk.DateEntry(self.filtrosFrame, onChange=self.onEntryChange)
+            self.fechaFinDate.entry.configure(state="readonly")
+            self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
+            self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
+            self.fechaFinDate.button.configure(padding=6)
 
         self.tituloLbl = ttk.Label(self.filtrosFrame, text="Filtrar llamadas por periodo", font=("JetBrains Mono", 20, "bold"))
         self.tituloLbl.grid(column=0, row=0, columnspan=2, pady=(0, 20))
         self.separador = ttk.Separator(self.filtrosFrame, orient="horizontal")
         self.separador.grid(column=0, row=1, sticky="NSEW", columnspan=2)
-
-        # Configuracion para la fecha desde
-        self.fechaInicioLbl = ttk.Label(self.filtrosFrame, text="Fecha inicio")
-        self.fechaInicioLbl.grid(column=0, row=2, pady=(20, 5))
-
-        self.fechaInicioDate= ttk.DateEntry(self.filtrosFrame)
-        self.fechaInicioDate.grid(column=0, row=3)
-        self.fechaInicioDate.entry.configure(font=("JetBrains Mono", 14), width=12)
-        self.fechaInicioDate.button.configure(padding=6)
-
-        # Configuracion para la fecha fin
-        self.fechaFinLbl = ttk.Label(self.filtrosFrame, text="Fecha fin")
-        self.fechaFinLbl.grid(column=1 ,row=2, pady=(20, 5), padx=(80, 0))
-
-        self.fechaFinDate = ttk.DateEntry(self.filtrosFrame)
-        # self.fechaFinDate.entry.config(state= "disabled")
-        self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
-        self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
-        self.fechaFinDate.button.configure(padding=6)
 
         # Boton para accionar la busqueda
         self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.tomarPeriodo)
@@ -88,8 +136,8 @@ class EncuestaBoundary:
         self.btnCancelar = ttk.Button(self.filtrosFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
         self.btnCancelar.grid(column=0, row=5, pady=(20, 0), sticky="NSEW", columnspan=2)
     
-    def mostrarMensajeError(self, message: str, title: str = ''):
-        Messagebox.show_error(message=message, title=title)
+    def mostrarMensajeError(self, parent, message: str, title: str = ''):
+        Messagebox.show_error(message=message, title=title, parent=parent)
 
     def tomarPeriodo(self):
         fechaInicio = self.fechaInicioDate.entry.get()
@@ -97,10 +145,15 @@ class EncuestaBoundary:
         self.controller.tomarPeriodo(fechaInicio, fechaFin)
 
     def mostrarLlamadas(self, llamadas: list[Llamada]):
+        try:
+            self.datosFrame.destroy()
+            self.opcionSalidaFrame.destroy()
+        except:
+            pass
+
         # Definicion de los headers de nuestra tabla
         coldata = [{"text": "ID", "stretch": False }, {"text": "Duracion", "stretch": True},
-        {"text": "DNI Cliente", "stretch": True},
-        ]
+        {"text": "DNI Cliente", "stretch": True}]
         rowdata = [(llamada.id, llamada.duracion, llamada.clienteDni) for llamada in llamadas]
 
         self.llamadasFrame = ttk.Frame(self.frame)
@@ -129,6 +182,7 @@ class EncuestaBoundary:
     def tomarLlamada(self, llamadas: list[Llamada]):
         seleccion = self.tableView.view.selection()[0]
         llamadaId = self.tableView.view.item(seleccion)['values'][0]
+
         for llamada in llamadas:
             if llamada.id == llamadaId:
                 self.llamadaSeleccionada = llamada
@@ -144,8 +198,10 @@ class EncuestaBoundary:
         self.datosFrame = ttk.Labelframe(self.frame, text="Datos de la llamada", padding=20)
         self.datosFrame.grid(column=0, row=0, padx=50, pady=50)
 
-        self.opcionSalidaFrame = ttk.Label(self.frame)
-        self.opcionSalidaFrame.grid(column=0, row=5, padx=50, pady=(10, 50))
+        self.opcionSalidaFrame = ttk.Labelframe(self.frame, text="Opciones", padding=20)
+        self.opcionSalidaFrame.grid(column=0, row=5, padx=50, pady=(10, 50), sticky="NWSE")
+        self.grupoBotones = ttk.Frame(self.opcionSalidaFrame)
+        self.grupoBotones.pack()
 
         self.nombreClienteLbl = ttk.Label(self.datosFrame, text=f"Nombre del cliente: {nombreCliente}")
         self.nombreClienteLbl.grid(column=0, row=0)
@@ -162,13 +218,22 @@ class EncuestaBoundary:
         self.descripcionRtaLbl = ttk.Label(self.datosFrame, text=f"Respuesta: {', '.join(descripcionRespuestas)}")
         self.descripcionRtaLbl.grid(column=0, row=4)
 
-        self.btnGenerarCsv = ttk.Button(self.opcionSalidaFrame ,text="Generar CSV", command=lambda: self.controller.generarCSV(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas))
-        self.btnGenerarCsv.grid(column=0, row=0, padx=(0, 5), sticky="NSEW")
+        self.grupoBotonesResultados = ttk.Label(self.grupoBotones)
+        self.grupoBotonesResultados.pack()
 
-        self.btnImprimir = ttk.Button(self.opcionSalidaFrame ,text="Imprimir")
-        self.btnImprimir.grid(column=1, row=0, padx=(0, 5), sticky="NSEW")
+        self.btnGenerarCsv = ttk.Button(self.grupoBotonesResultados ,text="Generar CSV", command=lambda: self.controller.generarCSV(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas), width=12)
+        self.btnGenerarCsv.pack(side="left", padx=(0, 5), pady=(0,5))
 
-        self.btnCancelar = ttk.Button(self.opcionSalidaFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
-        self.btnCancelar.grid(column=2, row=0, padx=(5, 0), sticky="NSEW")
+        self.btnImprimir = ttk.Button(self.grupoBotonesResultados ,text="Imprimir", width=12)
+        self.btnImprimir.pack(side="left", padx=(0, 5), pady=(0,5))
+
+        self.grupoBotonesSalida = ttk.Label(self.grupoBotones)
+        self.grupoBotonesSalida.pack()
+
+        self.btnVolver = ttk.Button(self.grupoBotonesSalida ,text="Volver", bootstyle="warning", command=lambda: self.controller.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt), width=12)
+        self.btnVolver.pack(side="left", padx=(0, 5))
+
+        self.btnCancelar = ttk.Button(self.grupoBotonesSalida ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana, width=12)
+        self.btnCancelar.pack(side="left", padx=(0, 5))
 
         self.llamadasFrame.destroy()
