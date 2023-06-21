@@ -11,9 +11,17 @@ class Encuesta(base):
     fechaVigencia = Column(DateTime)
     preguntas = relationship("Pregunta", back_populates="encuesta")
 
-    def esEncuestaDeCliente(self):
+    def esEncuestaDeCliente(self, llamadaSeleccionada):
+        respuestasCliente = llamadaSeleccionada.getRespuestas()
+        resultado = True
+
+        # Debemos validar que para todas las preguntas exista una respuesta del cliente
         for pregunta in self.preguntas:
-            return pregunta.esEncuestaDeCliente()
+            resultado = pregunta.esEncuestaDeCliente(respuestasCliente)
+            if not resultado:
+                return resultado
+        
+        return resultado
         
     def getDescripcionEncuesta(self):
         return self.descripcion
