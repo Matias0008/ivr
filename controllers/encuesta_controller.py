@@ -3,6 +3,7 @@ import tkinter as tk
 
 from views.encuesta_view import *
 from controllers.db_controller import *
+
 from models.Llamada_model import Llamada
 from models.Encuesta_model import Encuesta
 
@@ -21,11 +22,14 @@ class EncuestaController:
     
     def tomarPeriodo(self, fechaInicio: str, fechaFin: str):
         try:
-            self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%Y")
-            self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%Y")
+            self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%y")
+            self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%y")
+
+            # Validacion extra para que no se pueda insertar una fecha fin mayor que la de inicio
             if (self.fechaFin < self.fechaInicio):
-                return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha fin es menor que la fecha de inicio", title="Fecha fin incorrecta")
-        except:
+                return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
+        except Exception as e:
+            print(e)
             return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="El periodo ingreso es incorrecto", title="Periodo incorrecto")
 
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
@@ -70,7 +74,7 @@ class EncuestaController:
         encuestas = db.session.query(Encuesta).all()
 
         for encuesta in encuestas:
-            if encuesta.esEncuestaDeCliente():
+            if encuesta.esEncuestaDeCliente(self.llamadaSeleccionada):
                 encuestaCliente = encuesta
 
         descripcionEncuesta = encuestaCliente.getDescripcionEncuesta()

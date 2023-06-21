@@ -74,6 +74,7 @@ class DatabaseController:
             Encuesta(descripcion = 'Servicio', fechaVigencia = '2023-03-21 20:31:41'),
             Encuesta(descripcion = 'Conformidad', fechaVigencia = '2023-03-21 20:31:41'),
             Pregunta(encuestaId=1, descripcion = '¿Se sintió conforme con su la atención ofrecida?'),
+            Pregunta(encuestaId=1, descripcion = '¿Se sintió conforme con el servicio ofrecido?'),
             Pregunta(encuestaId=2, descripcion = '¿Cumplió su objetivo en esta llamada?'),
             Pregunta(encuestaId=3, descripcion = '¿Del 1 al 5, cómo puntuaría a su ayudante?'),
             RespuestaPosible(preguntaId = 1, descripcion = 'Si'),
@@ -87,7 +88,8 @@ class DatabaseController:
             RespuestaPosible(preguntaId = 3, descripcion = '3'),
             RespuestaPosible(preguntaId = 3, descripcion = '4'),
             RespuestaPosible(preguntaId = 3, descripcion = '5'),
-            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 8, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 2, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 3, llamadaId=1),
             RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 10, llamadaId=4),
             RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 9, llamadaId=2),
             RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 7, llamadaId=3)
