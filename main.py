@@ -1,14 +1,14 @@
 from dotenv import load_dotenv
 
-from controllers.encuesta_controller import *
-from controllers.db_controller import *
+from controllers.GestorConsultarEncuesta import *
+from controllers.Database import *
 
 if __name__ == "__main__":
     load_dotenv()
     db = DatabaseController()
     db.insertData()
 
-    encuestaGestor = EncuestaController()
-    encuestaPantalla = EncuestaBoundary(encuestaGestor)
+    encuestaGestor = GestorConsultarEncuesta()
+    encuestaPantalla = PantallaConsultarEncuesta(encuestaGestor)
     encuestaGestor.setPantalla(encuestaPantalla)
     encuestaPantalla.opcionConsultarEncuesta()

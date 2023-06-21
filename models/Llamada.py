@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import relationship
 
 from models.Base import base
 
@@ -36,7 +36,7 @@ class Llamada(base):
         return self.duracion
     
     def tieneEncuestaRespondida(self):
-        return self.encuestaRespondida
+        return len(self.respuestasDeCliente) > 0
     
     def getNombreClienteDeLlamadaYEstadoActual(self): # 19
         nombreCliente = self.cliente.getNombreCompleto() # Llama al 20
@@ -50,6 +50,7 @@ class Llamada(base):
                 return cambioEstado.getNombreEstado() # Llama al 24
     
     def getRespuestas(self):
+        return self.respuestasDeCliente
         descripcionesRespuesta = []
         for respuesta in self.respuestasDeCliente:
             descripcionesRespuesta.append(respuesta.getDescripcionRespuesta())

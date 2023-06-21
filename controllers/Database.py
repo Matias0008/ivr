@@ -4,14 +4,14 @@ from typing import List
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-from models.Cliente_model import Cliente
-from models.Estado_model import Estado
-from models.CambioEstado_model import CambioEstado
-from models.Llamada_model import Llamada
-from models.RespuestasCliente_model import RespuestaDeCliente
-from models.RespuestaPosible_model import RespuestaPosible
-from models.Encuesta_model import Encuesta
-from models.Pregunta_model import Pregunta
+from models.Cliente import Cliente
+from models.Estado import Estado
+from models.CambioEstado import CambioEstado
+from models.Llamada import Llamada
+from models.RespuestasCliente import RespuestaDeCliente
+from models.RespuestaPosible import RespuestaPosible
+from models.Encuesta import Encuesta
+from models.Pregunta import Pregunta
 
 from models.Models import base
 
@@ -63,18 +63,20 @@ class DatabaseController:
             CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin='2023-06-25 12:20:36', estadoId = 2, llamadaId = 1),
             CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin='2023-06-25 12:20:36', estadoId = 6, llamadaId = 1),
             CambioEstado(fechaHoraInicio='2023-06-25 12:19:36', fechaHoraFin=None, estadoId = 7, llamadaId = 1),
-            CambioEstado(fechaHoraInicio='2023-05-25 12:00:00', fechaHoraFin=None, estadoId = 1, llamadaId = 2),
+            CambioEstado(fechaHoraInicio='2023-06-25 12:00:00', fechaHoraFin=None, estadoId = 1, llamadaId = 2),
             CambioEstado(fechaHoraInicio='2023-06-30 12:19:36', fechaHoraFin=None, estadoId = 1, llamadaId = 3),
-            CambioEstado(fechaHoraInicio='2023-08-19 12:19:36', fechaHoraFin=None, estadoId = 1, llamadaId = 4),
+            CambioEstado(fechaHoraInicio='2023-07-21 12:19:36', fechaHoraFin=None, estadoId = 1, llamadaId = 4),
+            CambioEstado(fechaHoraInicio='2023-07-30 12:25:00', fechaHoraFin=None, estadoId = 1, llamadaId = 5),
             Llamada(duracion=60, descripcionOperador='Descripcion del operador 1', detalleAccionRequerida='Se cancela tarjeta por robo', encuestaRespondida=True, observacionAuditor='', clienteDni=44741306),
             Llamada(duracion=30, descripcionOperador='Descripcion del operador 2', detalleAccionRequerida='Se pausa tarjeta por extravío', encuestaRespondida=True, observacionAuditor='', clienteDni=35603215),
             Llamada(duracion=20, descripcionOperador='Descripcion del operador 3', detalleAccionRequerida='Se renueva la tarjeta por extravío', encuestaRespondida=True, observacionAuditor='', clienteDni=45789763),
             Llamada(duracion=15, descripcionOperador='Descripcion del operador 4', detalleAccionRequerida='Se registra la notificación de robo', encuestaRespondida=True, observacionAuditor='', clienteDni=44741306),
+            Llamada(duracion=120, descripcionOperador='Descripcion del operador 5', detalleAccionRequerida='Se registra la notificación de robo', encuestaRespondida=True, observacionAuditor='', clienteDni=35603215),
             Encuesta(descripcion = 'Atención al cliente', fechaVigencia = '2023-05-24 12:12:36'),
             Encuesta(descripcion = 'Servicio', fechaVigencia = '2023-03-21 20:31:41'),
             Encuesta(descripcion = 'Conformidad', fechaVigencia = '2023-03-21 20:31:41'),
-            Pregunta(encuestaId=1, descripcion = '¿Se sintió conforme con su la atención ofrecida?'),
-            Pregunta(encuestaId=1, descripcion = '¿Se sintió conforme con el servicio ofrecido?'),
+            Pregunta(encuestaId=1, descripcion = '¿Se sintió conforme con la atención ofrecida?'),
+            Pregunta(encuestaId=1, descripcion = '¿Se escucho correctamente al operador?'),
             Pregunta(encuestaId=2, descripcion = '¿Cumplió su objetivo en esta llamada?'),
             Pregunta(encuestaId=3, descripcion = '¿Del 1 al 5, cómo puntuaría a su ayudante?'),
             RespuestaPosible(preguntaId = 1, descripcion = 'Si'),
@@ -82,17 +84,20 @@ class DatabaseController:
             RespuestaPosible(preguntaId = 1, descripcion = 'Tal vez'),
             RespuestaPosible(preguntaId = 2, descripcion = 'Si'),
             RespuestaPosible(preguntaId = 2, descripcion = 'No'),
-            RespuestaPosible(preguntaId = 2, descripcion = 'Tal vez'),
-            RespuestaPosible(preguntaId = 3, descripcion = '1'),
-            RespuestaPosible(preguntaId = 3, descripcion = '2'),
-            RespuestaPosible(preguntaId = 3, descripcion = '3'),
-            RespuestaPosible(preguntaId = 3, descripcion = '4'),
-            RespuestaPosible(preguntaId = 3, descripcion = '5'),
-            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 2, llamadaId=1),
-            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 3, llamadaId=1),
-            RespuestaDeCliente(fechaEncuesta='2023-06-01', respuestaPosibleId = 10, llamadaId=4),
+            RespuestaPosible(preguntaId = 3, descripcion = 'Si'),
+            RespuestaPosible(preguntaId = 3, descripcion = 'No'),
+            RespuestaPosible(preguntaId = 4, descripcion = '1'),
+            RespuestaPosible(preguntaId = 4, descripcion = '2'),
+            RespuestaPosible(preguntaId = 4, descripcion = '3'),
+            RespuestaPosible(preguntaId = 4, descripcion = '4'),
+            RespuestaPosible(preguntaId = 4, descripcion = '5'),
+            RespuestaDeCliente(fechaEncuesta='2023-06-26', respuestaPosibleId = 4, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-06-26', respuestaPosibleId = 3, llamadaId=1),
+            RespuestaDeCliente(fechaEncuesta='2023-06-29', respuestaPosibleId = 10, llamadaId=4),
             RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 9, llamadaId=2),
-            RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 7, llamadaId=3)
+            RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 7, llamadaId=3),
+            RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 1, llamadaId=5),
+            RespuestaDeCliente(fechaEncuesta='2023-06-25', respuestaPosibleId = 4, llamadaId=5)
         ])
         self.session.commit()
 

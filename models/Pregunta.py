@@ -19,9 +19,8 @@ class Pregunta(base):
         # Lo que hacemos en esta funcion es validar si al menos una respuesta del cliente esta en nuestras respuestas posibles de la pregunta
 
         for respuesta in respuestasCliente:
-            for respuestaPosible in self.respuestasPosible:
-                if respuesta == respuestaPosible.getDescripcion():
-                    return True
+            if self.id == respuesta.respuestaPosible.preguntaId:
+                return True
             return False
     
     def getDescripcion(self):

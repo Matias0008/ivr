@@ -12,8 +12,5 @@ class Cliente(base):
     nroCelular = Column(BigInteger)
     llamadas = relationship("Llamada", back_populates='cliente')
 
-    def esCliente(self, dni: Integer):
-        return self.dni == dni
-
     def getNombreCompleto(self): # 20
         return f"{self.nombre} {self.apellido}"

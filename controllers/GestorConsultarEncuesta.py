@@ -1,20 +1,20 @@
 from datetime import datetime
 import tkinter as tk
 
-from views.encuesta_view import *
-from controllers.db_controller import *
+from views.PantallaConsultarEncuesta import *
+from controllers.Database import *
 
-from models.Llamada_model import Llamada
-from models.Encuesta_model import Encuesta
+from models.Llamada import Llamada
+from models.Encuesta import Encuesta
 
-class EncuestaController:
-    pantalla: EncuestaBoundary
+class GestorConsultarEncuesta:
+    pantalla: PantallaConsultarEncuesta
     fechaFin: str
     fechaInicio: str
     llamadasDentroDePeriodo: List[Llamada] = []
     llamadaSeleccionada: Llamada = []
 
-    def setPantalla(self, pantalla: EncuestaBoundary):
+    def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
 
     def consultarEncuesta(self):
@@ -22,14 +22,13 @@ class EncuestaController:
     
     def tomarPeriodo(self, fechaInicio: str, fechaFin: str):
         try:
-            self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%y")
-            self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%y")
+            self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%Y")
+            self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%Y")
 
             # Validacion extra para que no se pueda insertar una fecha fin mayor que la de inicio
             if (self.fechaFin < self.fechaInicio):
                 return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
-        except Exception as e:
-            print(e)
+        except:
             return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="El periodo ingreso es incorrecto", title="Periodo incorrecto")
 
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
@@ -62,7 +61,7 @@ class EncuestaController:
 
         # Luego obtenemos los datos de la encuesta
         descripcionEncuesta, descripcionPreguntas, descripcionRespuestas = self.obtenerDatosEncuesta()
-        self.mostrarEncuestas(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+        self.mostrarEncuesta(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
     
     def obtenerDatosEncuesta(self):
         descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
@@ -81,11 +80,13 @@ class EncuestaController:
         descripcionPreguntas = encuestaCliente.armarEncuesta()
         return [descripcionEncuesta, descripcionPreguntas, descripcionRespuestas]
     
-    def mostrarEncuestas(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
-        self.pantalla.mostrarEncuestas(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+    def mostrarEncuesta(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
+        self.pantalla.mostrarEncuesta(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
     
+    def tomarOpcionSalida(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
+        return self.generarCSV(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+
     def generarCSV(self,estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
-        print(estadoActual)
         with open('views/view.csv', 'w', encoding="UTF-8") as fp:
             contenido = f"""Nombre del cliente, Estado, Duracion\n{nombreCliente}, {estadoActual}, {duracion}\n"""
 

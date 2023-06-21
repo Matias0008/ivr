@@ -14,8 +14,5 @@ class RespuestaDeCliente(base):
     llamadaId = Column(Integer, ForeignKey('llamada.id'))
     llamada = relationship("Llamada", back_populates="respuestasDeCliente")
 
-    def getNombre(self):
-        return self.nombre
-    
     def getDescripcionRespuesta(self):
         return self.respuestaPosible.getDescripcion()

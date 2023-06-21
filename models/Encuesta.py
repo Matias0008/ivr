@@ -1,4 +1,4 @@
-from sqlalchemy import  Column, Integer, String, func, ForeignKey, DateTime
+from sqlalchemy import  Column, Integer, String, func, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 
 from models.Base import base
@@ -18,7 +18,7 @@ class Encuesta(base):
         # Debemos validar que para todas las preguntas exista una respuesta del cliente
         for pregunta in self.preguntas:
             resultado = pregunta.esEncuestaDeCliente(respuestasCliente)
-            if not resultado:
+            if resultado:
                 return resultado
         
         return resultado
