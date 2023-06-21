@@ -90,9 +90,9 @@ class GestorConsultarEncuesta:
         with open('views/view.csv', 'w', encoding="UTF-8") as fp:
             contenido = f"""Nombre del cliente, Estado, Duracion\n{nombreCliente}, {estadoActual}, {duracion}\n"""
 
-            for x, pregunta in enumerate(descripcionPreguntas):
-                for y, respuesta in enumerate(descripcionRespuestas):
-                    contenido += f"Pregunta: {x + 1}: {pregunta}, Respuesta: {y + 1}: {respuesta}\n"
+            for indice, pregunta in enumerate(descripcionPreguntas):
+                    respuesta = descripcionRespuestas[indice]
+                    contenido += f"Pregunta: {indice + 1}: {pregunta}, Respuesta: {indice + 1}: {respuesta.getDescripcionRespuesta()}\n"
 
             fp.write(contenido)
             pass

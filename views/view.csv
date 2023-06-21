@@ -1,3 +1,4 @@
 Nombre del cliente, Estado, Duracion
-Matias Delgado, Iniciada, 15
-Pregunta: 1: ¿Del 1 al 5, cómo puntuaría a su ayudante?, Respuesta: 1: <models.RespuestasCliente.RespuestaDeCliente object at 0x0000016387F1F340>
+Matias Delgado, Correcta, 60
+Pregunta: 1: ¿Se sintió conforme con la atención ofrecida?, Respuesta: 1: Si
+Pregunta: 2: ¿Se escucho correctamente al operador?, Respuesta: 2: Tal vez
