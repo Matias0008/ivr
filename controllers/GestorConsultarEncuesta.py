@@ -90,7 +90,7 @@ class GestorConsultarEncuesta:
         print(descripcionRespuestas)
         return [descripcionEncuesta, descripcionPreguntas, descripcionRespuestas]
     
-    def mostrarEncuesta(self):
+    def mostrarEncuesta(self): #35
         self.pantalla.mostrarEncuesta (
             self.estadoActual,
             self.nombreCliente,
@@ -100,23 +100,28 @@ class GestorConsultarEncuesta:
             self.descripcionRespuestas
         )
 
-    def tomarOpcionSalida(self):
+    def tomarOpcionSalida(self): #39
         return self.generarCSV()
 
-    def generarCSV(self):
+    def generarCSV(self): #40
         encabezados = ["Nombre del cliente", "Duración", "Estado", "Pregunta", "Respuesta"]
         datos = [[self.nombreCliente, self.duracion, self.estadoActual]]
 
         for indice, pregunta in enumerate(self.descripcionPreguntas):
             respuesta = self.descripcionRespuestas[indice]
             datos[0].append(pregunta)
-            datos[0].append(respuesta.getDescripcionRespuesta())
+            datos[0].append(respuesta)
 
             if indice != len(self.descripcionPreguntas) - 1:
                 encabezados.append("Pregunta")
                 encabezados.append("Respuesta")
 
-        with open("view.csv", mode='w', newline='') as archivo:
+        with open("view.csv", mode='w', newline='', encoding="UTF-8") as archivo:
             writer = csv.writer(archivo)
             writer.writerow(encabezados)
             writer.writerows(datos)
+        
+        self.finDeCU()
+    
+    def finDeCU(self):
+        return exit()

@@ -98,7 +98,7 @@ class PantallaConsultarEncuesta:
 
     def tomarFechaFin(self): #6
         self.fechaFinTxt = self.fechaFinDate.entry.get()
-        print("buscando llamadas")
+
         if (self.fechaInicioTxt):
             self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt)
 
@@ -163,7 +163,7 @@ class PantallaConsultarEncuesta:
             descripcionEncuesta, 
             descripcionPreguntas,
             descripcionRespuestas
-        ):
+        ): #36
 
         for frame in self.frame.winfo_children():
             frame.destroy()
@@ -213,7 +213,7 @@ class PantallaConsultarEncuesta:
         for data in treeviewData:
             self.treeviewPreguntas.insert("", tk.END, values=data)
 
-    def mostrarOpcionesSalida(self):
+    def mostrarOpcionesSalida(self): #37
         # Frame general para las opciones
         self.opcionSalidaFrame = ttk.Labelframe(self.frame, text="Opciones", padding=20)
         self.opcionSalidaFrame.grid(column=0, row=5, padx=50, pady=(10, 50), sticky="NWSE")
@@ -244,5 +244,5 @@ class PantallaConsultarEncuesta:
         self.btnCancelar = ttk.Button(self.grupoBotonesSalida ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana, width=12)
         self.btnCancelar.pack(side="left", padx=(0, 5))
 
-    def tomarOpcionSalida(self):
+    def tomarOpcionSalida(self): #38
         self.gestor.tomarOpcionSalida()

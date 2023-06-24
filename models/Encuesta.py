@@ -23,10 +23,10 @@ class Encuesta(base):
 
         return self
 
-    def getDescripcionEncuesta(self):
+    def getDescripcionEncuesta(self): #32
         return self.descripcion
 
-    def armarEncuesta(self):
+    def armarEncuesta(self): #33
         descripciones = []
         for pregunta in self.preguntas:
             descripciones.append(pregunta.getDescripcion())

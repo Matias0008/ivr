@@ -23,5 +23,5 @@ class Pregunta(base):
                 return True
         return False
 
-    def getDescripcion(self):
+    def getDescripcion(self): #34
         return self.descripcion
