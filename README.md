@@ -13,9 +13,13 @@ pip install -r requirements.txt
 ```
 
 &nbsp;
+
 ### Actualizar el .env
 ---
 Para que funcione de manera local, es necesario adaptar la conexion a la base de datos de Postgres.
+
+&nbsp;
+
 
 ## Correr la aplicación
 Hay que ejecutar el archivo **main.py**
