@@ -1,5 +1,10 @@
-from datetime import datetime
+import os
+import subprocess
+import sys  
+import csv
 import tkinter as tk
+
+from datetime import datetime
 
 from views.PantallaConsultarEncuesta import *
 from controllers.Database import *
@@ -8,11 +13,14 @@ from models.Llamada import Llamada
 from models.Encuesta import Encuesta
 
 class GestorConsultarEncuesta:
-    pantalla: PantallaConsultarEncuesta
-    fechaFin: str
-    fechaInicio: str
-    llamadasDentroDePeriodo: List[Llamada] = []
-    llamadaSeleccionada: Llamada = []
+    def __init__(self) -> None:
+        self.pantalla: PantallaConsultarEncuesta
+        self.fechaFin: str
+        self.fechaInicio: str
+        self.llamadasDentroDePeriodo: List[Llamada]
+        self.llamadaSeleccionada: Llamada
+        self.encuestas: List[Encuesta]
+        self.encuestaDeCliente: Encuesta
 
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
@@ -21,25 +29,24 @@ class GestorConsultarEncuesta:
         self.pantalla.habilitarFiltrosPorPeriodo()
     
     def tomarPeriodo(self, fechaInicio: str, fechaFin: str):
-        try:
-            self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%Y")
-            self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%Y")
+        # Transformamos de string a un tipo de dato de fecha
+        self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%y")
+        self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%y")
 
-            # Validacion extra para que no se pueda insertar una fecha fin mayor que la de inicio
-            if (self.fechaFin < self.fechaInicio):
-                return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
-        except:
-            return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="El periodo ingreso es incorrecto", title="Periodo incorrecto")
+        # Validacion para que no se pueda insertar una fecha fin menor que la de inicio
+        if (self.fechaFin < self.fechaInicio):
+            return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
 
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
 
     def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str):
-        self.llamadasDentroDePeriodo = []
+        # Obteniendo las llamadas con la base de datos
         db = DatabaseController()
         db.connect()
         llamadas: List[Llamada] = db.session.query(Llamada).all()
 
-        # Conseguimos las llamas que esten dentro de un periodo
+        # Conseguimos las llamadas que esten dentro de un periodo
+        self.llamadasDentroDePeriodo = []
         for llamada in llamadas:
             if llamada.esDePeriodo(fechaInicio, fechaFin) and llamada.tieneEncuestaRespondida():
                 self.llamadasDentroDePeriodo.append(llamada)
@@ -56,12 +63,12 @@ class GestorConsultarEncuesta:
 
     def obtenerDatosLlamada(self):
         # Primero obtenemos los datos de la llamada
-        estadoActual, nombreCliente = self.llamadaSeleccionada.getNombreClienteDeLlamadaYEstadoActual()
-        duracion = self.llamadaSeleccionada.getDuracion()
+        self.estadoActual, self.nombreCliente = self.llamadaSeleccionada.getNombreClienteDeLlamadaYEstadoActual()
+        self.duracion = self.llamadaSeleccionada.getDuracion()
 
         # Luego obtenemos los datos de la encuesta
-        descripcionEncuesta, descripcionPreguntas, descripcionRespuestas = self.obtenerDatosEncuesta()
-        self.mostrarEncuesta(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+        self.descripcionEncuesta, self.descripcionPreguntas, self.descripcionRespuestas = self.obtenerDatosEncuesta()
+        self.mostrarEncuesta()
     
     def obtenerDatosEncuesta(self):
         descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
@@ -70,9 +77,9 @@ class GestorConsultarEncuesta:
         db = DatabaseController()
         db.connect()
         encuestaCliente = []
-        encuestas = db.session.query(Encuesta).all()
+        self.encuestas = db.session.query(Encuesta).all()
 
-        for encuesta in encuestas:
+        for encuesta in self.encuestas:
             if encuesta.esEncuestaDeCliente(self.llamadaSeleccionada):
                 encuestaCliente = encuesta
 
@@ -80,19 +87,33 @@ class GestorConsultarEncuesta:
         descripcionPreguntas = encuestaCliente.armarEncuesta()
         return [descripcionEncuesta, descripcionPreguntas, descripcionRespuestas]
     
-    def mostrarEncuesta(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
-        self.pantalla.mostrarEncuesta(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
-    
-    def tomarOpcionSalida(self, estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
-        return self.generarCSV(estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas)
+    def mostrarEncuesta(self):
+        self.pantalla.mostrarEncuesta (
+            self.estadoActual,
+            self.nombreCliente,
+            self.duracion,
+            self.descripcionEncuesta,
+            self.descripcionPreguntas,
+            self.descripcionRespuestas
+        )
 
-    def generarCSV(self,estadoActual, nombreCliente, duracion, descripcionEncuesta, descripcionPreguntas, descripcionRespuestas):
-        with open('views/view.csv', 'w', encoding="UTF-8") as fp:
-            contenido = f"""Nombre del cliente, Estado, Duracion\n{nombreCliente}, {estadoActual}, {duracion}\n"""
+    def tomarOpcionSalida(self):
+        return self.generarCSV()
 
-            for indice, pregunta in enumerate(descripcionPreguntas):
-                    respuesta = descripcionRespuestas[indice]
-                    contenido += f"Pregunta: {indice + 1}: {pregunta}, Respuesta: {indice + 1}: {respuesta.getDescripcionRespuesta()}\n"
+    def generarCSV(self):
+        encabezados = ["Nombre del cliente", "Duración", "Estado", "Pregunta", "Respuesta"]
+        datos = [[self.nombreCliente, self.duracion, self.estadoActual]]
 
-            fp.write(contenido)
-            pass
+        for indice, pregunta in enumerate(self.descripcionPreguntas):
+            respuesta = self.descripcionRespuestas[indice]
+            datos[0].append(pregunta)
+            datos[0].append(respuesta.getDescripcionRespuesta())
+
+            if indice != len(self.descripcionPreguntas) - 1:
+                encabezados.append("Pregunta")
+                encabezados.append("Respuesta")
+
+        with open("view.csv", mode='w', newline='') as archivo:
+            writer = csv.writer(archivo)
+            writer.writerow(encabezados)
+            writer.writerows(datos)

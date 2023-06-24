@@ -1,4 +1,5 @@
 Nombre del cliente, Estado, Duracion
 Matias Delgado, Correcta, 60
-Pregunta: 1: ¿Se sintió conforme con la atención ofrecida?, Respuesta: 1: Si
-Pregunta: 2: ¿Se escucho correctamente al operador?, Respuesta: 2: Tal vez
+Pregunta, Respuesta
+¿Se sintió conforme con la atención ofrecida?, Si
+¿Se escucho correctamente al operador?, Tal vez
