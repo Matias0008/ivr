@@ -154,7 +154,7 @@ class DateEntry(ttk.Frame):
         self.button.pack(side=tk.LEFT)
 
         # starting value
-        self.entry.insert(tk.END, self._startdate.strftime(self._dateformat))
+        # self.entry.insert(tk.END, self._startdate.strftime(self._dateformat))
 
     def __getitem__(self, key: str):
         return self.configure(cnf=key)

@@ -27,42 +27,37 @@ class PantallaConsultarEncuesta:
         self.datosFrame: ttk.Frame
         self.opcionSalidaFrame: ttk.Frame
         self.btnConsultarEncuesta: ttk.Button
-        self.btnBuscar: ttk.Button
         self.btnCancelar: ttk.Button
         self.btnVolver: ttk.Button
         self.fechaInicioLbl: ttk.Label
         self.fechaFinLbl: ttk.Label
         self.fechaInicioDate: ttk.DateEntry
         self.fechaFinDate: ttk.DateEntry
-        self.fechaInicioTxt = date.today().strftime("%x")
-        self.fechaFinTxt = (date.today() + timedelta(days=120)).strftime("%x")
+        self.fechaInicioTxt = ''
+        self.fechaFinTxt = ''
         self.llamadasTableView: Tableview
         self.treeviewPreguntas: ttk.Treeview
         self.llamadaSeleccionada = []
 
-    def eliminarVentanas(self):
+    def tomarOpcionConsultarEncuesta(self): #1
+        self.habilitarVentana()
+
+    def habilitarVentana(self): #2
         for frame in self.frame.winfo_children():
             frame.destroy()
 
-    def opcionConsultarEncuesta(self):
-        self.habilitarVentana()
-
-    def habilitarVentana(self):
-        self.eliminarVentanas()
+        self.fechaInicioTxt = ''
+        self.fechaFinTxt = ''
         self.frame.place(relx=0.5, rely=0.5, anchor="center")
         self.btnConsultarEncuesta = ttk.Button(self.frame, text="Consultar encuesta", padding=15, command=self.gestor.consultarEncuesta)
         self.btnConsultarEncuesta.pack(anchor="center", pady=100, padx=100)
         self.root.mainloop()
     
-    def tomarFechaInicio(self):
-        self.fechaInicioTxt = self.fechaInicioDate.entry.get()
 
-    def tomarFechaFin(self):
-        self.fechaFinTxt = self.fechaFinDate.entry.get()
-        self.tomarPeriodo()
+    def habilitarFiltrosPorPeriodo(self): #4
+        for frame in self.frame.winfo_children():
+            frame.destroy()
 
-    def habilitarFiltrosPorPeriodo(self):
-        self.eliminarVentanas()
         self.filtrosFrame = ttk.Frame(self.frame)
         self.filtrosFrame.grid(column=0, row=0, pady=50, padx=50)
 
@@ -95,21 +90,25 @@ class PantallaConsultarEncuesta:
         self.separador = ttk.Separator(self.filtrosFrame, orient="horizontal")
         self.separador.grid(column=0, row=1, sticky="NSEW", columnspan=2)
 
-        # Boton para accionar la busqueda
-        self.btnBuscar = ttk.Button(self.filtrosFrame, text="Buscar", bootstyle="info", command=self.tomarPeriodo)
-        self.btnBuscar.grid(column=0, row=4, columnspan=2, pady=(40, 0), sticky="NSEW")
-
         self.btnCancelar = ttk.Button(self.filtrosFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
-        self.btnCancelar.grid(column=0, row=5, pady=(10, 0), sticky="NSEW", columnspan=2)
+        self.btnCancelar.grid(column=0, row=5, pady=(30, 0), sticky="NSEW", columnspan=2)
     
+    def tomarFechaInicio(self): #5
+        self.fechaInicioTxt = self.fechaInicioDate.entry.get()
+
+    def tomarFechaFin(self): #6
+        self.fechaFinTxt = self.fechaFinDate.entry.get()
+        print("buscando llamadas")
+        if (self.fechaInicioTxt):
+            print("a")
+            self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt)
+
     def mostrarMensajeError(self, parent, message: str, title: str = ''):
         Messagebox.show_error(message=message, title=title, parent=parent)
 
-    def tomarPeriodo(self):
-        self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt)
-
-    def mostrarLlamadas(self, llamadas: list[Llamada]):
-        self.eliminarVentanas()
+    def mostrarLlamadas(self, llamadas: list[Llamada]): #14
+        for frame in self.frame.winfo_children():
+            frame.destroy()
 
         # Definicion de los headers de nuestra tabla
         columnas = [
@@ -146,7 +145,7 @@ class PantallaConsultarEncuesta:
         self.btnVolver = ttk.Button(self.llamadasFrame ,text="Volver", command=self.habilitarFiltrosPorPeriodo, bootstyle="warning")
         self.btnVolver.grid(column=0, row=4, padx=(50, 150), pady=(10, 50), sticky="W")
 
-    def tomarLlamada(self, llamadas: list[Llamada]):
+    def tomarLlamada(self, llamadas: list[Llamada]): #15
         # Conseguimos el numero de fila seleccionado
         selected_iid = self.llamadasTableView.view.focus()
         llamada_index = self.llamadasTableView.view.index(selected_iid)
@@ -167,7 +166,9 @@ class PantallaConsultarEncuesta:
             descripcionRespuestas
         ):
 
-        self.eliminarVentanas()
+        for frame in self.frame.winfo_children():
+            frame.destroy()
+
         self.mostrarOpcionesSalida()
 
         # Posicionamos el frame para los datos

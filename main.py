@@ -11,4 +11,4 @@ if __name__ == "__main__":
     encuestaGestor = GestorConsultarEncuesta()
     encuestaPantalla = PantallaConsultarEncuesta(encuestaGestor)
     encuestaGestor.setPantalla(encuestaPantalla)
-    encuestaPantalla.opcionConsultarEncuesta()
+    encuestaPantalla.tomarOpcionConsultarEncuesta()

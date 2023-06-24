@@ -12,5 +12,5 @@ class Cliente(base):
     nroCelular = Column(BigInteger)
     llamadas = relationship("Llamada", back_populates='cliente')
 
-    def getNombreCompleto(self): # 20
+    def getNombreCompleto(self): # 19
         return f"{self.nombre} {self.apellido}"

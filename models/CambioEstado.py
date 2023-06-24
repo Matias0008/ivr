@@ -14,12 +14,12 @@ class CambioEstado(base):
     llamadaId = Column(Integer, ForeignKey('llamada.id'))
     llamada = relationship("Llamada", back_populates="cambiosEstado")
 
-    def getFechaHoraInicio(self):
+    def getFechaHoraInicio(self): #11
         return self.fechaHoraInicio
 
-    def getNombreEstado(self): # 24
+    def getNombreEstado(self): # 22
         return self.estado.getNombre()
     
-    def noTieneFechaHoraFin(self): # 22
+    def noTieneFechaHoraFin(self): # 21
         # Si devuelve True entonces el atributo fechaHoraFin es nulo, o sea, no tiene fechaHoraFin (es el ultimo cambio de estado)
         return self.fechaHoraFin is None

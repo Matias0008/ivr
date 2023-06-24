@@ -11,5 +11,5 @@ class Estado(base):
     descripcion = Column(String, nullable=True)
     cambiosEstado = relationship("CambioEstado", back_populates="estado")
 
-    def getNombre(self):
+    def getNombre(self): #23
         return self.nombre

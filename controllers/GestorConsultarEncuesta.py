@@ -22,10 +22,10 @@ class GestorConsultarEncuesta:
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
 
-    def consultarEncuesta(self):
+    def consultarEncuesta(self): #3
         self.pantalla.habilitarFiltrosPorPeriodo()
     
-    def tomarPeriodo(self, fechaInicio: str, fechaFin: str):
+    def tomarPeriodo(self, fechaInicio: str, fechaFin: str): #7
         # Transformamos de string a un tipo de dato de fecha
         self.fechaInicio = datetime.strptime(fechaInicio, "%x")
         self.fechaFin = datetime.strptime(fechaFin, "%x")
@@ -36,7 +36,7 @@ class GestorConsultarEncuesta:
 
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
 
-    def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str):
+    def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str): #8
         # Obteniendo las llamadas con la base de datos
         db = DatabaseController()
         db.connect()
@@ -51,14 +51,18 @@ class GestorConsultarEncuesta:
         # Si no encontramos ninguna llamada lanzamos un mensaje de error
         if (len(self.llamadasDentroDePeriodo) == 0):
             return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="No hay llamadas dentro del periodo", title="No hay llamadas")
-        
-        self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
 
-    def tomarLlamada(self, llamadaSeleccionada: Llamada):
+        self.mostrarLlamadas()
+
+
+    def mostrarLlamadas(self): #13
+        return self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
+
+    def tomarLlamada(self, llamadaSeleccionada: Llamada): #16
         self.llamadaSeleccionada = llamadaSeleccionada
         self.obtenerDatosLlamada()
 
-    def obtenerDatosLlamada(self):
+    def obtenerDatosLlamada(self): #17
         # Primero obtenemos los datos de la llamada
         self.estadoActual, self.nombreCliente = self.llamadaSeleccionada.getNombreClienteDeLlamadaYEstadoActual()
         self.duracion = self.llamadaSeleccionada.getDuracion()
@@ -67,7 +71,7 @@ class GestorConsultarEncuesta:
         self.descripcionEncuesta, self.descripcionPreguntas, self.descripcionRespuestas = self.obtenerDatosEncuesta()
         self.mostrarEncuesta()
     
-    def obtenerDatosEncuesta(self):
+    def obtenerDatosEncuesta(self): #25
         descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
 
         # Me conecto a la base de datos para obtener todas las encuestas

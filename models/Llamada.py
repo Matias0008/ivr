@@ -18,11 +18,11 @@ class Llamada(base):
     cambiosEstado = relationship("CambioEstado", back_populates="llamada")
     respuestasDeCliente = relationship("RespuestaDeCliente", back_populates="llamada")
 
-    def esDePeriodo(self, fechaInicio: String, fechaFin: String):
+    def esDePeriodo(self, fechaInicio: String, fechaFin: String): #9
         fechaCreacion = self.determinarEstadoInicial()
         return fechaInicio <= fechaCreacion <= fechaFin
     
-    def determinarEstadoInicial(self):
+    def determinarEstadoInicial(self): #10
         fechaHoraInicioMenor = None
 
         for cambioEstado in self.cambiosEstado:
@@ -32,26 +32,22 @@ class Llamada(base):
 
         return fechaHoraInicioMenor
 
-    def getDuracion(self):
+    def getDuracion(self): #24
         return self.duracion
     
-    def tieneEncuestaRespondida(self):
+    def tieneEncuestaRespondida(self): #12
         return len(self.respuestasDeCliente) > 0
     
-    def getNombreClienteDeLlamadaYEstadoActual(self): # 19
-        nombreCliente = self.cliente.getNombreCompleto() # Llama al 20
-        nombreUltimoEstado = self.determinarUltimoEstado() # Llama al 21
+    def getNombreClienteDeLlamadaYEstadoActual(self): # 18
+        nombreCliente = self.cliente.getNombreCompleto()
+        nombreUltimoEstado = self.determinarUltimoEstado() # Llama al 20
         return [nombreUltimoEstado, nombreCliente]
 
-    def determinarUltimoEstado(self): # 21
+    def determinarUltimoEstado(self): # 20
         for cambioEstado in self.cambiosEstado:
-            if cambioEstado.noTieneFechaHoraFin(): # Llama al 22
+            if cambioEstado.noTieneFechaHoraFin():
                 # Aca ya tengo el ultimo cambio de estado
-                return cambioEstado.getNombreEstado() # Llama al 24
+                return cambioEstado.getNombreEstado()
     
-    def getRespuestas(self):
+    def getRespuestas(self): #26
         return self.respuestasDeCliente
-        descripcionesRespuesta = []
-        for respuesta in self.respuestasDeCliente:
-            descripcionesRespuesta.append(respuesta.getDescripcionRespuesta())
-        return descripcionesRespuesta
