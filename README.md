@@ -14,10 +14,12 @@ pip install -r requirements.txt
 
 &nbsp;
 
-### Crear un .env con el contenido del .env.template configurandolo para una base de datos de Postgres
-
+### Actualizar el .env
 ---
+Para que funcione de manera local, es necesario adaptar la conexion a la base de datos de Postgres.
 
-```bash
-DATABASE_URL=postgresql://{user}:{password}@{host}/{db}
-```
+&nbsp;
+
+
+## Correr la aplicación
+Hay que ejecutar el archivo **main.py**
