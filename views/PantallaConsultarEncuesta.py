@@ -100,7 +100,6 @@ class PantallaConsultarEncuesta:
         self.fechaFinTxt = self.fechaFinDate.entry.get()
         print("buscando llamadas")
         if (self.fechaInicioTxt):
-            print("a")
             self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt)
 
     def mostrarMensajeError(self, parent, message: str, title: str = ''):
@@ -207,7 +206,7 @@ class PantallaConsultarEncuesta:
         treeviewData = []
         for indice, pregunta in enumerate(descripcionPreguntas):
             treeviewData.append(
-                ( pregunta, descripcionRespuestas[indice].getDescripcionRespuesta() )
+                ( pregunta, descripcionRespuestas[indice] )
             )
 
         # Ahora debemos insertar esos datos en la tabla

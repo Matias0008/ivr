@@ -2,6 +2,7 @@ from sqlalchemy import  Column, Integer, String, func, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 
 from models.Base import base
+from models.Llamada import Llamada
 
 class Encuesta(base):
     __tablename__ = "encuesta"
@@ -11,23 +12,22 @@ class Encuesta(base):
     fechaVigencia = Column(DateTime)
     preguntas = relationship("Pregunta", back_populates="encuesta")
 
-    def esEncuestaDeCliente(self, llamadaSeleccionada):
+    def esEncuestaDeCliente(self, llamadaSeleccionada: Llamada): #29
         respuestasCliente = llamadaSeleccionada.getRespuestas()
         resultado = True
 
-        # Debemos validar que para todas las preguntas exista una respuesta del cliente
         for pregunta in self.preguntas:
             resultado = pregunta.esEncuestaDeCliente(respuestasCliente)
-            if resultado:
+            if not resultado:
                 return resultado
-        
-        return resultado
-        
+
+        return self
+
     def getDescripcionEncuesta(self):
         return self.descripcion
 
     def armarEncuesta(self):
         descripciones = []
         for pregunta in self.preguntas:
-           descripciones.append(pregunta.getDescripcion())
+            descripciones.append(pregunta.getDescripcion())
         return descripciones

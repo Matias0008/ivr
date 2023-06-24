@@ -50,4 +50,7 @@ class Llamada(base):
                 return cambioEstado.getNombreEstado()
     
     def getRespuestas(self): #26
-        return self.respuestasDeCliente
+        descripciones = []
+        for respuesta in self.respuestasDeCliente:
+            descripciones.append(respuesta.getDescripcionRespuesta())
+        return descripciones

@@ -12,16 +12,16 @@ class Pregunta(base):
     encuestaId = Column(Integer, ForeignKey("encuesta.id"))
     encuesta = relationship("Encuesta", back_populates="preguntas")
 
-    def esEncuestaDeCliente(self, respuestasCliente):
+    def esEncuestaDeCliente(self, respuestasCliente): #30
         return self.tieneRespuestaPosible(respuestasCliente)
 
-    def tieneRespuestaPosible(self, respuestasCliente):
-        # Lo que hacemos en esta funcion es validar si al menos una respuesta del cliente esta en nuestras respuestas posibles de la pregunta
+    def tieneRespuestaPosible(self, respuestasCliente): #31
+        rtaPosibleDescripcion = [rtaPosible.getDescripcion() for rtaPosible in self.respuestasPosible]
 
-        for respuesta in respuestasCliente:
-            if self.id == respuesta.respuestaPosible.preguntaId:
+        for rtaCliente in respuestasCliente:
+            if rtaCliente in rtaPosibleDescripcion:
                 return True
-            return False
-    
+        return False
+
     def getDescripcion(self):
         return self.descripcion

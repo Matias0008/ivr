@@ -12,8 +12,8 @@ class RespuestaPosible(base):
     preguntaId = Column(Integer, ForeignKey('pregunta.id'))
     pregunta = relationship("Pregunta", back_populates="respuestasPosible")
 
-    def getDescripcion(self):
+    def getDescripcion(self): #28
         return self.descripcion
-    
+
     def getPregunta(self):
         return self.pregunta

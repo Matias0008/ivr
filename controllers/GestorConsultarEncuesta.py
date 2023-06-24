@@ -83,9 +83,11 @@ class GestorConsultarEncuesta:
         for encuesta in self.encuestas:
             if encuesta.esEncuestaDeCliente(self.llamadaSeleccionada):
                 encuestaCliente = encuesta
+        print(encuestaCliente.getDescripcionEncuesta())
 
         descripcionEncuesta = encuestaCliente.getDescripcionEncuesta()
         descripcionPreguntas = encuestaCliente.armarEncuesta()
+        print(descripcionRespuestas)
         return [descripcionEncuesta, descripcionPreguntas, descripcionRespuestas]
     
     def mostrarEncuesta(self):
