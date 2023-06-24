@@ -103,7 +103,6 @@ class DateEntry(ttk.Frame):
         onChange = None,
         **kwargs,
     ):
-        print("hola")
         """
         Parameters:
 
