@@ -5,9 +5,9 @@ from controllers.Database import *
 
 if __name__ == "__main__":
     load_dotenv()
+
     db = DatabaseController()
     db.insertData()
-
     encuestaGestor = GestorConsultarEncuesta()
     encuestaPantalla = PantallaConsultarEncuesta(encuestaGestor)
     encuestaGestor.setPantalla(encuestaPantalla)

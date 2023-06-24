@@ -14,7 +14,7 @@ class PantallaConsultarEncuesta:
         self.gestor = gestor
 
         self.root = ttk.Window(themename="flatly")
-        self.root.title("Encuesta boundary")
+        self.root.title("Consultar encuesta")
         self.root.geometry("1280x720")
         self.root.resizable(0, 0)
 
@@ -193,12 +193,15 @@ class PantallaConsultarEncuesta:
         self.datosLlamadaTableView.hbar.destroy()
         self.datosLlamadaTableView.view.config(selectmode="none")
 
+        self.descripcionEncuestaLbl = ttk.Label(self.datosFrame, text=f"Descripcion de la encuesta: {descripcionEncuesta}")
+        self.descripcionEncuestaLbl.grid(column=0, row=3, pady=(20, 0))
+
         # Definimos la estructura de la tabla
         colummns = ("Pregunta", "Respuesta")
         self.treeviewPreguntas = ttk.Treeview(self.datosFrame, columns=colummns, show="headings", bootstyle="primary", selectmode="none", height=5)
-        self.treeviewPreguntas.grid(column=0, row=3, pady=(20, 0))
+        self.treeviewPreguntas.grid(column=0, row=4, pady=(20, 0))
         self.treeviewPreguntas.column(0, width=650)
-        self.treeviewPreguntas.column(1, width=250)
+        self.treeviewPreguntas.column(1, width=300)
         self.treeviewPreguntas.heading("Pregunta", text="Pregunta")
         self.treeviewPreguntas.heading("Respuesta", text="Respuesta")
 

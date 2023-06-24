@@ -72,7 +72,7 @@ class GestorConsultarEncuesta:
         self.mostrarEncuesta()
     
     def obtenerDatosEncuesta(self): #25
-        descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
+        self.descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
 
         # Me conecto a la base de datos para obtener todas las encuestas
         db = DatabaseController()
@@ -83,12 +83,10 @@ class GestorConsultarEncuesta:
         for encuesta in self.encuestas:
             if encuesta.esEncuestaDeCliente(self.llamadaSeleccionada):
                 encuestaCliente = encuesta
-        print(encuestaCliente.getDescripcionEncuesta())
 
-        descripcionEncuesta = encuestaCliente.getDescripcionEncuesta()
-        descripcionPreguntas = encuestaCliente.armarEncuesta()
-        print(descripcionRespuestas)
-        return [descripcionEncuesta, descripcionPreguntas, descripcionRespuestas]
+        self.descripcionEncuesta = encuestaCliente.getDescripcionEncuesta()
+        self.descripcionPreguntas = encuestaCliente.armarEncuesta()
+        return [self.descripcionEncuesta, self.descripcionPreguntas, self.descripcionRespuestas]
     
     def mostrarEncuesta(self): #35
         self.pantalla.mostrarEncuesta (
