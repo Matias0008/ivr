@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 
+
 from controllers.GestorConsultarEncuesta import *
 from controllers.Database import *
 

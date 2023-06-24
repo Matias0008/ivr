@@ -1,6 +1,3 @@
-import os
-import subprocess
-import sys  
 import csv
 import tkinter as tk
 
@@ -30,8 +27,8 @@ class GestorConsultarEncuesta:
     
     def tomarPeriodo(self, fechaInicio: str, fechaFin: str):
         # Transformamos de string a un tipo de dato de fecha
-        self.fechaInicio = datetime.strptime(fechaInicio, "%d/%m/%y")
-        self.fechaFin = datetime.strptime(fechaFin, "%d/%m/%y")
+        self.fechaInicio = datetime.strptime(fechaInicio, "%x")
+        self.fechaFin = datetime.strptime(fechaFin, "%x")
 
         # Validacion para que no se pueda insertar una fecha fin menor que la de inicio
         if (self.fechaFin < self.fechaInicio):

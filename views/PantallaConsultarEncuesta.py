@@ -1,10 +1,10 @@
 from datetime import date, timedelta
 
 import tkinter as tk
-import ttkbootstrap as ttk 
+import libraries.ttkbootstrap as ttk 
 
-from ttkbootstrap.tableview import Tableview
-from ttkbootstrap.dialogs.dialogs import Messagebox
+from libraries.ttkbootstrap.tableview import Tableview
+from libraries.ttkbootstrap.dialogs.dialogs import Messagebox
 
 from models.Llamada import Llamada
 font = ("JetBrains Mono", 14, "bold")
@@ -34,8 +34,8 @@ class PantallaConsultarEncuesta:
         self.fechaFinLbl: ttk.Label
         self.fechaInicioDate: ttk.DateEntry
         self.fechaFinDate: ttk.DateEntry
-        self.fechaInicioTxt = date.today().strftime("%d/%m/%y")
-        self.fechaFinTxt = (date.today() + timedelta(days=120)).strftime("%d/%m/%y")
+        self.fechaInicioTxt = date.today().strftime("%x")
+        self.fechaFinTxt = (date.today() + timedelta(days=120)).strftime("%x")
         self.llamadasTableView: Tableview
         self.treeviewPreguntas: ttk.Treeview
         self.llamadaSeleccionada = []
