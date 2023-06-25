@@ -1,7 +1,6 @@
-from datetime import date, timedelta
-
+import time
 import tkinter as tk
-import libraries.ttkbootstrap as ttk 
+import libraries.ttkbootstrap as ttk
 
 from libraries.ttkbootstrap.tableview import Tableview
 from libraries.ttkbootstrap.dialogs.dialogs import Messagebox
@@ -13,7 +12,7 @@ class PantallaConsultarEncuesta:
     def __init__(self, gestor):
         self.gestor = gestor
 
-        self.root = ttk.Window(themename="flatly")
+        self.root = ttk.Window(themename="darkly")
         self.root.title("Consultar encuesta")
         self.root.geometry("1280x720")
         self.root.resizable(0, 0)
@@ -81,7 +80,7 @@ class PantallaConsultarEncuesta:
         self.fechaFinDate.grid(column=1, row=3, padx=(80, 0))
         self.fechaFinDate.entry.configure(state="readonly")
         self.fechaFinDate.entry.configure(font=("JetBrains Mono", 14), width=12)
-        self.fechaFinDate.button.configure(padding=6)
+        self.fechaFinDate.button.configure(padding=5)
 
         self.tituloLbl = ttk.Label(self.filtrosFrame, text="Filtrar llamadas por periodo", font=("JetBrains Mono", 20, "bold"))
         self.tituloLbl.grid(column=0, row=0, columnspan=2, pady=(0, 20))
@@ -98,6 +97,8 @@ class PantallaConsultarEncuesta:
         self.fechaFinTxt = self.fechaFinDate.entry.get()
 
         if (self.fechaInicioTxt):
+            self.fechaFinDate.entry.insert(tk.END, self.fechaFinTxt)
+            time.sleep(0.2)
             self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt)
 
     def mostrarMensajeError(self, parent, message: str, title: str = ''):
@@ -138,7 +139,6 @@ class PantallaConsultarEncuesta:
         self.llamadasTableView.view.bind("<<TreeviewSelect>>", lambda event: self.tomarLlamada(llamadas=llamadas))
         self.llamadasTableView.grid(column=0, row=2, padx=50, pady=50)
 
-
     def tomarLlamada(self, llamadas: list[Llamada]): #15
         # Conseguimos el numero de fila seleccionado
         selected_iid = self.llamadasTableView.view.focus()
@@ -166,8 +166,10 @@ class PantallaConsultarEncuesta:
         self.mostrarOpcionesSalida()
 
         # Posicionamos el frame para los datos
-        self.datosFrame = ttk.LabelFrame(self.frame, text="Datos de la llamada")
+        self.datosFrame = ttk.Frame(self.frame)
         self.datosFrame.grid(column=0, row=0, padx=50, pady=50)
+        self.tituloDatosFrame = ttk.Label(self.datosFrame, text="Datos de la llamada", font=("JetBrains Mono", 16, "bold"))
+        self.tituloDatosFrame.grid(column=0, row=0, padx=(0, 20), sticky="W")
 
         # Definimos la estructura de la tabla
         columnas = [
@@ -182,14 +184,13 @@ class PantallaConsultarEncuesta:
             coldata=columnas,
             rowdata=filas,
             bootstyle="primary",
-            height=1,
+            height=2,
         )
         self.datosLlamadaTableView.grid(column=0, row=2, pady=(20, 0), columnspan=2, sticky="NSEW")
-        self.datosLlamadaTableView.hbar.destroy()
         self.datosLlamadaTableView.view.config(selectmode="none")
 
-        self.descripcionEncuestaLbl = ttk.Label(self.datosFrame, text=f"Descripcion de la encuesta: {descripcionEncuesta}")
-        self.descripcionEncuestaLbl.grid(column=0, row=3, pady=(20, 0))
+        self.descripcionEncuestaLbl = ttk.Label(self.datosFrame, text=f"Descripcion de la encuesta: {descripcionEncuesta}", font=("JetBrains Mono", 16, "bold"))
+        self.descripcionEncuestaLbl.grid(column=0, row=3, pady=(20, 0), sticky="W")
 
         # Definimos la estructura de la tabla
         colummns = ("Pregunta", "Respuesta")

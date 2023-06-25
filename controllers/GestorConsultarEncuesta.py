@@ -11,13 +11,13 @@ from models.Encuesta import Encuesta
 
 class GestorConsultarEncuesta:
     def __init__(self) -> None:
-        self.pantalla: PantallaConsultarEncuesta
         self.fechaFin: str
         self.fechaInicio: str
         self.llamadasDentroDePeriodo: List[Llamada]
         self.llamadaSeleccionada: Llamada
         self.encuestas: List[Encuesta]
         self.encuestaDeCliente: Encuesta
+        self.session = DatabaseController().session
 
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
@@ -31,16 +31,17 @@ class GestorConsultarEncuesta:
         self.fechaFin = datetime.strptime(fechaFin, "%x")
 
         # Validacion para que no se pueda insertar una fecha fin menor que la de inicio
-        if (self.fechaFin < self.fechaInicio):
+        if not self.validarPeriodo():
             return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
 
         self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
 
+    def validarPeriodo(self):
+        return self.fechaFin > self.fechaInicio
+
     def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str): #8
         # Obteniendo las llamadas con la base de datos
-        db = DatabaseController()
-        db.connect()
-        llamadas: List[Llamada] = db.session.query(Llamada).all()
+        llamadas: List[Llamada] = self.session.query(Llamada).all()
 
         # Conseguimos las llamadas que esten dentro de un periodo
         self.llamadasDentroDePeriodo = []

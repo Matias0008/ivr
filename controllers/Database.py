@@ -20,7 +20,7 @@ class DatabaseController:
         self.db_url = os.environ.get('DATABASE_URL')
         self.engine = create_engine(self.db_url)
         self.Session = sessionmaker(bind=self.engine)
-        self.session = None
+        self.session = self.Session()
 
     def connect(self):
         if not self.session:
