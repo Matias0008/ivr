@@ -28,7 +28,6 @@ class PantallaConsultarEncuesta:
         self.opcionSalidaFrame: ttk.Frame
         self.btnConsultarEncuesta: ttk.Button
         self.btnCancelar: ttk.Button
-        self.btnVolver: ttk.Button
         self.fechaInicioLbl: ttk.Label
         self.fechaFinLbl: ttk.Label
         self.fechaInicioDate: ttk.DateEntry
@@ -52,7 +51,6 @@ class PantallaConsultarEncuesta:
         self.btnConsultarEncuesta = ttk.Button(self.frame, text="Consultar encuesta", padding=15, command=self.gestor.consultarEncuesta)
         self.btnConsultarEncuesta.pack(anchor="center", pady=100, padx=100)
         self.root.mainloop()
-    
 
     def habilitarFiltrosPorPeriodo(self): #4
         for frame in self.frame.winfo_children():
@@ -140,9 +138,6 @@ class PantallaConsultarEncuesta:
         self.llamadasTableView.view.bind("<<TreeviewSelect>>", lambda event: self.tomarLlamada(llamadas=llamadas))
         self.llamadasTableView.grid(column=0, row=2, padx=50, pady=50)
 
-        # Configuraciones para el boton volver
-        self.btnVolver = ttk.Button(self.llamadasFrame ,text="Volver", command=self.habilitarFiltrosPorPeriodo, bootstyle="warning")
-        self.btnVolver.grid(column=0, row=4, padx=(50, 150), pady=(10, 50), sticky="W")
 
     def tomarLlamada(self, llamadas: list[Llamada]): #15
         # Conseguimos el numero de fila seleccionado
@@ -154,7 +149,7 @@ class PantallaConsultarEncuesta:
         self.btnTomarLlamada.grid(column=0, row=3, sticky="NSEW", padx=50)
 
         self.btnCancelar = ttk.Button(self.llamadasFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
-        self.btnCancelar.grid(column=0, row=4, padx=(150, 50), pady=(10, 50), sticky="EW")
+        self.btnCancelar.grid(column=0, row=4, padx=50, pady=(10, 50), sticky="NSEW")
 
     def mostrarEncuesta (
             self,estadoActual,
@@ -241,9 +236,6 @@ class PantallaConsultarEncuesta:
         self.btnImprimir.pack(side="left", padx=(0, 5), pady=(0,5))
 
         # Botones para la salida
-        self.btnVolver = ttk.Button(self.grupoBotonesSalida ,text="Volver", bootstyle="warning", command=lambda: self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt), width=12)
-        self.btnVolver.pack(side="left", padx=(0, 5))
-
         self.btnCancelar = ttk.Button(self.grupoBotonesSalida ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana, width=12)
         self.btnCancelar.pack(side="left", padx=(0, 5))
 
