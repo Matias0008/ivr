@@ -11,7 +11,7 @@ class Llamada(base):
     descripcionOperador = Column(String, nullable=True)
     detalleAccionRequerida = Column(String, nullable=True)
     duracion = Column(Integer)
-    encuestaRespondida = Column(Boolean)
+    encuestaEnviada = Column(Boolean)
     observacionAuditor = Column(String, nullable=True)
     clienteDni = Column(Integer, ForeignKey('cliente.dni'))
     cliente = relationship("Cliente", back_populates="llamadas")

@@ -1,5 +1,4 @@
 import csv
-import tkinter as tk
 
 from datetime import datetime
 
@@ -55,7 +54,6 @@ class GestorConsultarEncuesta:
 
         self.mostrarLlamadas()
 
-
     def mostrarLlamadas(self): #13
         return self.pantalla.mostrarLlamadas(self.llamadasDentroDePeriodo)
 
@@ -76,10 +74,8 @@ class GestorConsultarEncuesta:
         self.descripcionRespuestas = self.llamadaSeleccionada.getRespuestas()
 
         # Me conecto a la base de datos para obtener todas las encuestas
-        db = DatabaseController()
-        db.connect()
         encuestaCliente = []
-        self.encuestas = db.session.query(Encuesta).all()
+        self.encuestas = self.session.query(Encuesta).all()
 
         for encuesta in self.encuestas:
             if encuesta.esEncuestaDeCliente(self.llamadaSeleccionada):
