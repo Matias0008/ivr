@@ -99,6 +99,7 @@ class DateEntry(ttk.Frame):
         dateformat=r"%x",
         firstweekday=6,
         startdate=None,
+        maxdate=None,
         bootstyle="",
         onChange = None,
         **kwargs,
@@ -135,6 +136,8 @@ class DateEntry(ttk.Frame):
         self._firstweekday = firstweekday
 
         self._startdate = startdate or datetime.today()
+        self._maxdate = maxdate or datetime.today()
+
         self._bootstyle = bootstyle
         super().__init__(master, **kwargs)
 
@@ -227,6 +230,7 @@ class DateEntry(ttk.Frame):
     def _on_date_ask(self, onChange):
         """Callback for pushing the date button"""
         _val = self.entry.get() or datetime.today().strftime(self._dateformat)
+        
         try:
             self._startdate = datetime.strptime(_val, self._dateformat)
         except Exception as e:
@@ -238,6 +242,7 @@ class DateEntry(ttk.Frame):
             )
 
         old_date = datetime.strptime(_val, self._dateformat)
+
 
         # get the new date and insert into the entry
         new_date = Querybox.get_date(

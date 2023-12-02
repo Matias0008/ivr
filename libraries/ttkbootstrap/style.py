@@ -2460,7 +2460,7 @@ class StyleBuilderTTK:
         STYLE = "Table.Treeview"
 
         f = font.nametofont("TkDefaultFont")
-        rowheight = f.metrics()["linespace"]
+        rowheight = 120 
 
         if self.is_light_theme:
             disabled_fg = Colors.update_hsv(self.colors.inputbg, vd=-0.2)
@@ -2525,7 +2525,7 @@ class StyleBuilderTTK:
             darkcolor=self.colors.inputbg,
             borderwidth=2,
             padding=0,
-            rowheight=25,
+            rowheight=120,
             relief=tk.RAISED,
         )
         self.style.map(
@@ -2576,7 +2576,7 @@ class StyleBuilderTTK:
         STYLE = "Treeview"
 
         f = font.nametofont("TkDefaultFont")
-        rowheight = f.metrics()["linespace"]
+        rowheight = 120
 
         if self.is_light_theme:
             disabled_fg = Colors.update_hsv(self.colors.inputbg, vd=-0.2)
@@ -2630,7 +2630,7 @@ class StyleBuilderTTK:
             darkcolor=self.colors.inputbg,
             borderwidth=2,
             padding=0,
-            rowheight=25,
+            rowheight=300,
             relief=tk.RAISED,
         )
         self.style.map(

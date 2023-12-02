@@ -68,6 +68,8 @@ class TableColumn:
         self._sort = ASCENDING
         self._settings_column = {}
         self._settings_heading = {}
+        s = ttk.Style()
+        s.configure('Treeview', rowheight=120)
 
         self.view: ttk.Treeview = tableview.view
         self.view.column(

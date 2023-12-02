@@ -102,6 +102,7 @@ class DatabaseController:
         self.session.commit()
 
     def createTables(self):
+        print("Creando tablas")
         base.metadata.create_all(self.engine)
     
     def conseguirClientes(self) -> List[Cliente]:

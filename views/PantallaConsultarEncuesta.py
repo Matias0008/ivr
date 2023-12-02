@@ -104,6 +104,9 @@ class PantallaConsultarEncuesta:
     def mostrarMensajeError(self, parent, message: str, title: str = ''):
         Messagebox.show_error(message=message, title=title, parent=parent)
 
+    def volverTomarPeriodo(self):
+        self.habilitarFiltrosPorPeriodo()
+
     def mostrarLlamadas(self, llamadas: list[Llamada]): #14
         for frame in self.frame.winfo_children():
             frame.destroy()
@@ -132,9 +135,9 @@ class PantallaConsultarEncuesta:
             rowdata=filas,
             paginated=True,
             bootstyle="primary",
-            autofit=True
+            autofit=True,
         )
-
+        
         self.llamadasTableView.view.configure(selectmode="browse")
         self.llamadasTableView.view.bind("<<TreeviewSelect>>", lambda event: self.tomarLlamada(llamadas=llamadas))
         self.llamadasTableView.grid(column=0, row=2, padx=50, pady=50)
@@ -147,9 +150,12 @@ class PantallaConsultarEncuesta:
 
         self.btnTomarLlamada = ttk.Button(self.llamadasFrame, text="Tomar llamada", command=lambda: self.gestor.tomarLlamada(self.llamadaSeleccionada), bootstyle="success")
         self.btnTomarLlamada.grid(column=0, row=3, sticky="NSEW", padx=50)
+    
+        self.btnVolver = ttk.Button(self.llamadasFrame, text="Volver", command=self.volverTomarPeriodo, bootstyle="primary")
+        self.btnVolver.grid(column=0, row=4, sticky="NSEW", padx=50, pady=(10, 0))
 
         self.btnCancelar = ttk.Button(self.llamadasFrame ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana)
-        self.btnCancelar.grid(column=0, row=4, padx=50, pady=(10, 50), sticky="NSEW")
+        self.btnCancelar.grid(column=0, row=5, padx=50, pady=(10, 50), sticky="NSEW")
 
     def mostrarEncuesta (
             self,estadoActual,
@@ -212,6 +218,9 @@ class PantallaConsultarEncuesta:
         for data in treeviewData:
             self.treeviewPreguntas.insert("", tk.END, values=data)
 
+    def volverSeleccionLlamada(self):
+        self.gestor.tomarPeriodo(self.fechaInicioTxt, self.fechaFinTxt)
+
     def mostrarOpcionesSalida(self): #37
         # Frame general para las opciones
         self.opcionSalidaFrame = ttk.Labelframe(self.frame, text="Opciones", padding=20)
@@ -235,6 +244,9 @@ class PantallaConsultarEncuesta:
 
         self.btnImprimir = ttk.Button(self.grupoBotonesResultados ,text="Imprimir", width=12)
         self.btnImprimir.pack(side="left", padx=(0, 5), pady=(0,5))
+
+        self.btnVolver = ttk.Button(self.grupoBotonesSalida ,text="Volver", command=self.volverSeleccionLlamada, width=12)
+        self.btnVolver.pack(side="left", padx=(0, 5))
 
         # Botones para la salida
         self.btnCancelar = ttk.Button(self.grupoBotonesSalida ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana, width=12)
