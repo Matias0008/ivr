@@ -7,9 +7,12 @@ from controllers.Database import *
 
 from models.Llamada import Llamada
 from models.Encuesta import Encuesta
-from interfaces.Strategy import  EstrategiaCSV
+from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
+from interfaces.Strategy import TipoReporte
 
 class GestorConsultarEncuesta:
+    estrategia: Estrategia
+
     def __init__(self) -> None:
         self.fechaFin: str
         self.fechaInicio: str
@@ -96,16 +99,21 @@ class GestorConsultarEncuesta:
             self.descripcionRespuestas
         )
 
-    def tomarOpcionSalida(self): #39
+    def tomarOpcionSalida(self, tipoReporte: TipoReporte): #39
+        self.estrategia = self.crearEstrategia(tipoReporte) 
         return self.generarReporte()
     
     def generarReporte(self) -> None:
-        estrategia = self.crearEstrategia()
-        estrategia.generarReporte(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
-        return self.finDeCU()
-    
-    def crearEstrategia(self) -> EstrategiaCSV:
-        return EstrategiaCSV()
+        self.estrategia.generarReporte(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
+        self.pantalla.mostrarMensajeSatisfactorio(self.estrategia.mostrarMensajeSalida())
+        # return self.finDeCU()
+
+    def crearEstrategia(self, tipoReporte: TipoReporte) -> Estrategia:
+        match tipoReporte:
+            case TipoReporte.CSV:
+                return EstrategiaCSV()
+            case TipoReporte.IMPRESO:
+                return EstrategiaImprimir()
 
     def finDeCU(self):
         return exit()

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Impresion de datos</title>
+  </head>
+  <body class="min-h-screen w-full flex items-center justify-center">
+    <div class="relative overflow-x-auto">
+      <div class="inline-flex items-center justify-center w-full mb-6">
+        <hr
+          class="w-full h-px my-8 bg-gray-200 border-0 dark:bg-gray-700 opacity-40"
+        />
+        <span
+          class="absolute px-6 py-1 font-medium text-white -translate-x-1/2 bg-white left-1/2 dark:bg-gray-700 rounded-lg text-[25px]"
+          >Datos de la encuesta</span
+        >
+      </div>
+      <table
+        class="w-full text-xl text-left rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="px-6 py-3">Nombre del cliente</th>
+            <th scope="col" class="px-6 py-3">Duracion de la llamada</th>
+            <th scope="col" class="px-6 py-3">Estado de la llamada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              Matias Delgado
+            </th>
+            <td class="px-6 py-4">120 minutos</td>
+            <td class="px-6 py-4">Silenciada</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="inline-flex items-center justify-center w-full mt-6">
+        <hr
+          class="w-full h-px my-8 bg-gray-200 border-0 dark:bg-gray-700 opacity-40"
+        />
+        <span
+          class="absolute px-6 py-1 font-medium text-white -translate-x-1/2 bg-white left-1/2 dark:bg-gray-700 rounded-lg text-[25px]"
+          >Preguntas y respuestas</span
+        >
+      </div>
+      <!-- Otra tabla -->
+      <table
+        class="w-full text-xl text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-6"
+      >
+        <thead
+          class="text-xl text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr>
+            <th scope="col" class="px-6 py-3">Pregunta</th>
+            <th scope="col" class="px-6 py-3">Respuesta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              ¿Se sintió conforme con la atención ofrecida?
+            </th>
+            <td class="px-6 py-4">Tal vez</td>
+          </tr>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              ¿Se escucho correctamente al operador?
+            </th>
+            <td class="px-6 py-4">Se escucho correctamente</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

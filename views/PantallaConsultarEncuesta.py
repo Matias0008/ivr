@@ -5,6 +5,7 @@ import libraries.ttkbootstrap as ttk
 from libraries.ttkbootstrap.tableview import Tableview
 from libraries.ttkbootstrap.dialogs.dialogs import Messagebox
 import controllers.GestorConsultarEncuesta as Gestor
+from interfaces.Strategy import TipoReporte
 
 from models.Llamada import Llamada
 font = ("JetBrains Mono", 14, "bold")
@@ -240,10 +241,10 @@ class PantallaConsultarEncuesta:
         self.grupoBotonesSalida.pack()
 
         # Botones para los resultados
-        self.btnGenerarCsv = ttk.Button(self.grupoBotonesResultados ,text="Generar CSV", command=lambda: self.gestor.tomarOpcionSalida(), width=12)
+        self.btnGenerarCsv = ttk.Button(self.grupoBotonesResultados ,text="Generar CSV", command=lambda: self.gestor.tomarOpcionSalida(TipoReporte.CSV), width=12)
         self.btnGenerarCsv.pack(side="left", padx=(0, 5), pady=(0,5))
 
-        self.btnImprimir = ttk.Button(self.grupoBotonesResultados ,text="Imprimir", width=12)
+        self.btnImprimir = ttk.Button(self.grupoBotonesResultados ,text="Imprimir", width=12, command=lambda: self.gestor.tomarOpcionSalida(TipoReporte.IMPRESO))
         self.btnImprimir.pack(side="left", padx=(0, 5), pady=(0,5))
 
         self.btnVolver = ttk.Button(self.grupoBotonesSalida ,text="Volver", command=self.volverSeleccionLlamada, width=12)
@@ -252,6 +253,11 @@ class PantallaConsultarEncuesta:
         # Botones para la salida
         self.btnCancelar = ttk.Button(self.grupoBotonesSalida ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana, width=12)
         self.btnCancelar.pack(side="left", padx=(0, 5))
+    
+
+    def mostrarMensajeSatisfactorio(self, mensaje: str):
+        # centra el messagebox
+        Messagebox.show_info(message=mensaje, title="Exito", parent=self.datosFrame)
 
     def tomarOpcionSalida(self): #38
         self.gestor.tomarOpcionSalida()
