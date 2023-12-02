@@ -4,13 +4,14 @@ import libraries.ttkbootstrap as ttk
 
 from libraries.ttkbootstrap.tableview import Tableview
 from libraries.ttkbootstrap.dialogs.dialogs import Messagebox
+import controllers.GestorConsultarEncuesta as Gestor
 
 from models.Llamada import Llamada
 font = ("JetBrains Mono", 14, "bold")
 
 class PantallaConsultarEncuesta:
     def __init__(self, gestor):
-        self.gestor = gestor
+        self.gestor: Gestor.GestorConsultarEncuesta = gestor
 
         self.root = ttk.Window(themename="darkly")
         self.root.title("Consultar encuesta")
@@ -239,7 +240,7 @@ class PantallaConsultarEncuesta:
         self.grupoBotonesSalida.pack()
 
         # Botones para los resultados
-        self.btnGenerarCsv = ttk.Button(self.grupoBotonesResultados ,text="Generar CSV", command=lambda: self.gestor.generarCSV(), width=12)
+        self.btnGenerarCsv = ttk.Button(self.grupoBotonesResultados ,text="Generar CSV", command=lambda: self.gestor.tomarOpcionSalida(), width=12)
         self.btnGenerarCsv.pack(side="left", padx=(0, 5), pady=(0,5))
 
         self.btnImprimir = ttk.Button(self.grupoBotonesResultados ,text="Imprimir", width=12)
