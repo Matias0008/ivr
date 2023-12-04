@@ -5,6 +5,8 @@ from controllers.Database import *
 
 if __name__ == "__main__":
     load_dotenv()
+    database = DatabaseController()
+    database.insertData()
     # database = DatabaseController()
     # database.insertData()
 
