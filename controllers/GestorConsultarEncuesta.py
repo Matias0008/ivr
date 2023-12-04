@@ -3,15 +3,20 @@ from datetime import datetime
 from enums.TipoReporte import TipoReporte
 from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
 
+from interfaces.IteradorLlamada import IteradorLlamada
+from interfaces.Iterator import Agregado
+
 from models.Encuesta import Encuesta
 from models.Llamada import Llamada
 
 from views.PantallaConsultarEncuesta import *
 import csv
 
-class GestorConsultarEncuesta:
+class GestorConsultarEncuesta(Agregado):
     estrategia: Estrategia
     opcionSalida: TipoReporte
+    iteradorLlamada: IteradorLlamada
+    llamadas: list[Llamada]
 
     def __init__(self) -> None:
         self.fechaFin: str
@@ -21,6 +26,12 @@ class GestorConsultarEncuesta:
         self.encuestas: List[Encuesta]
         self.encuestaDeCliente: Encuesta
         self.session = DatabaseController().session
+
+    def crearIterador(self):
+        self.llamadas = self.session.query(Llamada).all()
+        filtro_esDePeriodo = lambda llamada: llamada.esDePeriodo(self.fechaInicio, self.fechaFin)
+        filtro_tieneEncuestaRespondida = lambda llamada: llamada.tieneEncuestaRespondida()
+        return IteradorLlamada(self.llamadas, [filtro_esDePeriodo, filtro_tieneEncuestaRespondida])
 
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
@@ -37,20 +48,24 @@ class GestorConsultarEncuesta:
         if not self.validarPeriodo():
             return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
 
-        self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
+        self.buscarLlamadasDentroDePeriodo()
 
     def validarPeriodo(self):
         return self.fechaFin > self.fechaInicio
 
-    def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str): #8
-        # Obteniendo las llamadas con la base de datos
-        llamadas: List[Llamada] = self.session.query(Llamada).all()
-
-        # Conseguimos las llamadas que esten dentro de un periodo
+    def buscarLlamadasDentroDePeriodo(self): #8
+        self.iteradorLlamada = self.crearIterador()
         self.llamadasDentroDePeriodo = []
-        for llamada in llamadas:
-            if llamada.esDePeriodo(fechaInicio, fechaFin) and llamada.tieneEncuestaRespondida():
-                self.llamadasDentroDePeriodo.append(llamada)
+
+        # Implementar Iterator
+        elementoActual = self.iteradorLlamada.primero()
+        while not self.iteradorLlamada.haTerminado():
+            elementoActual = self.iteradorLlamada.elementoActual()
+
+            if self.iteradorLlamada.cumpleFiltro():
+                self.llamadasDentroDePeriodo.append(elementoActual)
+            
+            self.iteradorLlamada.siguiente()
 
         # Si no encontramos ninguna llamada lanzamos un mensaje de error
         if (len(self.llamadasDentroDePeriodo) == 0):
