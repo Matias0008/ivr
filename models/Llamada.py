@@ -2,11 +2,13 @@ from typing import List
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
+from interfaces.IteradorCambioEstado import IteradorCambioEstado
+
 from models.Base import base
 
 class Llamada(base):
     __tablename__ = "llamada"
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     descripcionOperador = Column(String, nullable=True)
     detalleAccionRequerida = Column(String, nullable=True)
@@ -22,16 +24,13 @@ class Llamada(base):
         fechaCreacion = self.determinarEstadoInicial()
         return fechaInicio <= fechaCreacion <= fechaFin
 
+    def crearIterador(self):
+        return IteradorCambioEstado(self.cambiosEstado)
+
     def determinarEstadoInicial(self): #10
-        fechaHoraInicioMenor = None
-
-        for cambioEstado in self.cambiosEstado:
-            fechaHoraInicio = cambioEstado.getFechaHoraInicio()
-            if fechaHoraInicioMenor is None or fechaHoraInicio < fechaHoraInicioMenor:
-                fechaHoraInicioMenor = fechaHoraInicio
-
-        return fechaHoraInicioMenor
-
+        iterador = self.crearIterador()
+        return iterador.primero().getFechaHoraInicio()
+    
     def getDuracion(self): #24
         return self.duracion
     

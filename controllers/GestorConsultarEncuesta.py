@@ -29,7 +29,9 @@ class GestorConsultarEncuesta(Agregado):
 
     def crearIterador(self):
         self.llamadas = self.session.query(Llamada).all()
-        return IteradorLlamada(self.llamadas)
+        filtro_esDePeriodo = lambda llamada: llamada.esDePeriodo(self.fechaInicio, self.fechaFin)
+        filtro_tieneEncuestaRespondida = lambda llamada: llamada.tieneEncuestaRespondida()
+        return IteradorLlamada(self.llamadas, [filtro_esDePeriodo, filtro_tieneEncuestaRespondida])
 
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
@@ -46,26 +48,24 @@ class GestorConsultarEncuesta(Agregado):
         if not self.validarPeriodo():
             return self.pantalla.mostrarMensajeError(parent=self.pantalla.filtrosFrame,message="La fecha de fin es menor que la fecha de inicio", title="Fecha  de fin incorrecta")
 
-        self.buscarLlamadasDentroDePeriodo(self.fechaInicio, self.fechaFin)
+        self.buscarLlamadasDentroDePeriodo()
 
     def validarPeriodo(self):
         return self.fechaFin > self.fechaInicio
 
-    def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str): #8
+    def buscarLlamadasDentroDePeriodo(self): #8
         self.iteradorLlamada = self.crearIterador()
+        self.llamadasDentroDePeriodo = []
 
         # Implementar Iterator
-        self.iteradorLlamada.primero()
+        elementoActual = self.iteradorLlamada.primero()
         while not self.iteradorLlamada.haTerminado():
             elementoActual = self.iteradorLlamada.elementoActual()
-            if elementoActual.esDePeriodo(fechaInicio, fechaFin) and elementoActual.tieneEncuestaRespondida():
-                self.llamadasDentroDePeriodo.append(llamada)
 
-        # Conseguimos las llamadas que esten dentro de un periodo
-        self.llamadasDentroDePeriodo = []
-        for llamada in self.llamadas:
-            if llamada.esDePeriodo(fechaInicio, fechaFin) and llamada.tieneEncuestaRespondida():
-                self.llamadasDentroDePeriodo.append(llamada)
+            if self.iteradorLlamada.cumpleFiltro():
+                self.llamadasDentroDePeriodo.append(elementoActual)
+            
+            self.iteradorLlamada.siguiente()
 
         # Si no encontramos ninguna llamada lanzamos un mensaje de error
         if (len(self.llamadasDentroDePeriodo) == 0):

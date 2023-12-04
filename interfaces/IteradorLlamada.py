@@ -1,16 +1,15 @@
 from interfaces.Iterator import Iterator
-from typing import TypeVar
-
 from models.Llamada import Llamada
-
+from typing import Callable, TypeVar
 T = TypeVar('T')
 
 class IteradorLlamada(Iterator):
     llamadas: list[Llamada] = []
-    filtros: list[T] = []
     posicion = 0
+    filtros: list[Callable[[Llamada], bool]] = []
 
-    def __init__(self, llamadas: list[Llamada]) -> None:
+    def __init__(self, llamadas: list[Llamada], filtros: list[Callable[[Llamada], bool]]) -> None:
+        self.filtros = filtros
         self.llamadas = llamadas
 
     def primero(self) -> None:
@@ -27,8 +26,8 @@ class IteradorLlamada(Iterator):
     def elementoActual(self) -> Llamada:
         return self.llamadas[self.posicion]
 
-    # def cumpleFiltro(self):
-    #     for filtro in self.filtros:
-    #         if not filtro(self.elementoActual()):
-    #             return False
-    #         return True
+    def cumpleFiltro(self) -> bool:
+        for filtro in self.filtros:
+            if not filtro(self.elementoActual()):
+                return False
+        return True
