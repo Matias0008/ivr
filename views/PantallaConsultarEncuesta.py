@@ -5,7 +5,7 @@ import libraries.ttkbootstrap as ttk
 from libraries.ttkbootstrap.tableview import Tableview
 from libraries.ttkbootstrap.dialogs.dialogs import Messagebox
 import controllers.GestorConsultarEncuesta as Gestor
-from interfaces.Strategy import TipoReporte
+from enums.TipoReporte import TipoReporte
 
 from models.Llamada import Llamada
 font = ("JetBrains Mono", 12, "bold")
@@ -254,9 +254,7 @@ class PantallaConsultarEncuesta:
         self.btnCancelar = ttk.Button(self.grupoBotonesSalida ,text="Cancelar", bootstyle="danger", command=self.habilitarVentana, width=12)
         self.btnCancelar.pack(side="left", padx=(0, 5))
     
-
     def mostrarMensajeSatisfactorio(self, mensaje: str):
-        # centra el messagebox
         Messagebox.show_info(message=mensaje, title="Exito", parent=self.datosFrame)
 
     def tomarOpcionSalida(self): #38

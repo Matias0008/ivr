@@ -8,7 +8,7 @@ from controllers.Database import *
 from models.Llamada import Llamada
 from models.Encuesta import Encuesta
 from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
-from interfaces.Strategy import TipoReporte
+from enums.TipoReporte import TipoReporte
 
 class GestorConsultarEncuesta:
     estrategia: Estrategia
