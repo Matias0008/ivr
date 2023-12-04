@@ -1,17 +1,17 @@
-import csv
-
+from controllers.Database import *
 from datetime import datetime
+from enums.TipoReporte import TipoReporte
+from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
+
+from models.Encuesta import Encuesta
+from models.Llamada import Llamada
 
 from views.PantallaConsultarEncuesta import *
-from controllers.Database import *
-
-from models.Llamada import Llamada
-from models.Encuesta import Encuesta
-from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
-from enums.TipoReporte import TipoReporte
+import csv
 
 class GestorConsultarEncuesta:
     estrategia: Estrategia
+    opcionSalida: TipoReporte
 
     def __init__(self) -> None:
         self.fechaFin: str
@@ -100,7 +100,8 @@ class GestorConsultarEncuesta:
         )
 
     def tomarOpcionSalida(self, tipoReporte: TipoReporte): #39
-        self.estrategia = self.crearEstrategia(tipoReporte) 
+        self.opcionSalida = tipoReporte
+        self.estrategia = self.crearEstrategia() 
         return self.generarReporte()
     
     def generarReporte(self) -> None:
@@ -108,8 +109,8 @@ class GestorConsultarEncuesta:
         self.pantalla.mostrarMensajeSatisfactorio(self.estrategia.mostrarMensajeSalida())
         # return self.finDeCU()
 
-    def crearEstrategia(self, tipoReporte: TipoReporte) -> Estrategia:
-        match tipoReporte:
+    def crearEstrategia(self) -> Estrategia:
+        match self.opcionSalida:
             case TipoReporte.CSV:
                 return EstrategiaCSV()
             case TipoReporte.IMPRESO:
@@ -117,3 +118,4 @@ class GestorConsultarEncuesta:
 
     def finDeCU(self):
         return exit()
+    

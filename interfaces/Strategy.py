@@ -16,8 +16,6 @@ class EstrategiaCSV(Estrategia):
         encabezados = ["Nombre del cliente", "Duración", "Estado"]
 
         # Añadir encabezados de preguntas y respuestas
-        # Hacer lo de abajo pero mediante list comprehension
-
         for i in range(len(pregunta)):
             encabezados.append('Pregunta')
             encabezados.append('Respuesta')
