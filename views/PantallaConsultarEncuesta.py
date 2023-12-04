@@ -8,7 +8,7 @@ import controllers.GestorConsultarEncuesta as Gestor
 from interfaces.Strategy import TipoReporte
 
 from models.Llamada import Llamada
-font = ("JetBrains Mono", 14, "bold")
+font = ("JetBrains Mono", 12, "bold")
 
 class PantallaConsultarEncuesta:
     def __init__(self, gestor):
