@@ -3,15 +3,20 @@ from datetime import datetime
 from enums.TipoReporte import TipoReporte
 from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
 
+from interfaces.IteradorLlamada import IteradorLlamada
+from interfaces.Iterator import Agregado
+
 from models.Encuesta import Encuesta
 from models.Llamada import Llamada
 
 from views.PantallaConsultarEncuesta import *
 import csv
 
-class GestorConsultarEncuesta:
+class GestorConsultarEncuesta(Agregado):
     estrategia: Estrategia
     opcionSalida: TipoReporte
+    iteradorLlamada: IteradorLlamada
+    llamadas: list[Llamada]
 
     def __init__(self) -> None:
         self.fechaFin: str
@@ -21,6 +26,10 @@ class GestorConsultarEncuesta:
         self.encuestas: List[Encuesta]
         self.encuestaDeCliente: Encuesta
         self.session = DatabaseController().session
+
+    def crearIterador(self):
+        self.llamadas = self.session.query(Llamada).all()
+        return IteradorLlamada(self.llamadas)
 
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
         self.pantalla = pantalla
@@ -43,12 +52,18 @@ class GestorConsultarEncuesta:
         return self.fechaFin > self.fechaInicio
 
     def buscarLlamadasDentroDePeriodo(self, fechaInicio: str, fechaFin: str): #8
-        # Obteniendo las llamadas con la base de datos
-        llamadas: List[Llamada] = self.session.query(Llamada).all()
+        self.iteradorLlamada = self.crearIterador()
+
+        # Implementar Iterator
+        self.iteradorLlamada.primero()
+        while not self.iteradorLlamada.haTerminado():
+            elementoActual = self.iteradorLlamada.elementoActual()
+            if elementoActual.esDePeriodo(fechaInicio, fechaFin) and elementoActual.tieneEncuestaRespondida():
+                self.llamadasDentroDePeriodo.append(llamada)
 
         # Conseguimos las llamadas que esten dentro de un periodo
         self.llamadasDentroDePeriodo = []
-        for llamada in llamadas:
+        for llamada in self.llamadas:
             if llamada.esDePeriodo(fechaInicio, fechaFin) and llamada.tieneEncuestaRespondida():
                 self.llamadasDentroDePeriodo.append(llamada)
 

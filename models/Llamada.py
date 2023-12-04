@@ -21,7 +21,7 @@ class Llamada(base):
     def esDePeriodo(self, fechaInicio: String, fechaFin: String): #9
         fechaCreacion = self.determinarEstadoInicial()
         return fechaInicio <= fechaCreacion <= fechaFin
-    
+
     def determinarEstadoInicial(self): #10
         fechaHoraInicioMenor = None
 
