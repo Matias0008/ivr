@@ -1,44 +1,18 @@
-from abc import ABC, abstractmethod
 import webbrowser
-import csv
 
-class Estrategia(ABC):
-    @abstractmethod
-    def generarReporte(self, nombreCliente: str, duracionLlamada: int, estado: str, pregunta: list, respuesta: list):
-        pass
+class InterfazImpresora:
+    instancia = None
+    # Aplica el patron Singleton
 
-    @abstractmethod
-    def mostrarMensajeSalida(self):
-        pass
-
-class EstrategiaCSV(Estrategia):
-    def generarReporte(self, nombreCliente: str, duracionLlamada: int, estado: str, pregunta: list, respuesta: list):
-        encabezados = ["Nombre del cliente", "Duración", "Estado"]
-
-        # Añadir encabezados de preguntas y respuestas
-        for i in range(len(pregunta)):
-            encabezados.append('Pregunta')
-            encabezados.append('Respuesta')
-
-        datos = [nombreCliente, duracionLlamada, estado] + [val for pair in zip(pregunta, respuesta) for val in pair]
-
-        # Abrir archivo CSV en modo escritura
-        with open('reporte.csv', 'w', newline='', encoding="UTF-8") as archivo:
-            writer = csv.writer(archivo)
-
-            # Escribir encabezados en el archivo CSV
-            writer.writerow(encabezados)
-
-            # Escribir datos en el archivo CSV
-            writer.writerow(datos)
-
-    def mostrarMensajeSalida(self):
-        return "Se genero el archivo CSV de manera correcta"
-
-class EstrategiaImprimir(Estrategia):
-    def generarReporte(self, nombreCliente: str, duracionLlamada: int, estado: str, pregunta: list, respuesta: list):    
-
+    @staticmethod
+    def getInstancia():
+        if InterfazImpresora.instancia == None:
+            InterfazImpresora.instancia = InterfazImpresora()
+        return InterfazImpresora.instancia
+    
+    def imprimir(self, *args: list[str]):
         # Generamos las respuestas y preguntas de manera dinamica
+        nombreCliente, duracionLlamada, estado, pregunta, respuesta = args
         preguntasYRespuestas = "" 
         for i in range(len(pregunta)):
             preguntasYRespuestas += f"""
@@ -116,6 +90,3 @@ class EstrategiaImprimir(Estrategia):
 
         # Abrir el archivo en el navegador para impresión
         webbrowser.open("impresion_datos.html")
-
-    def mostrarMensajeSalida(self):
-        return "Se imprimio el reporte de manera correcta"

@@ -1,4 +1,4 @@
-from interfaces.Iterator import Iterator
+from design.Iterator import Iterator
 from models.CambioEstado import CambioEstado 
 
 class IteradorCambioEstado(Iterator):

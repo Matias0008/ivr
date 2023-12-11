@@ -1,19 +1,17 @@
 from controllers.Database import *
 from datetime import datetime
 from enums.TipoReporte import TipoReporte
-from interfaces.Strategy import  EstrategiaCSV, Estrategia, EstrategiaImprimir
-
-from interfaces.IteradorLlamada import IteradorLlamada
-from interfaces.Iterator import Agregado
+from design.IteradorLlamada import IteradorLlamada
+from design.Iterator import Agregado
 
 from models.Encuesta import Encuesta
 from models.Llamada import Llamada
+from design.InterfazImpresora import InterfazImpresora
 
 from views.PantallaConsultarEncuesta import *
 import csv
 
 class GestorConsultarEncuesta(Agregado):
-    estrategia: Estrategia
     opcionSalida: TipoReporte
     iteradorLlamada: IteradorLlamada
     llamadas: list[Llamada]
@@ -116,20 +114,37 @@ class GestorConsultarEncuesta(Agregado):
 
     def tomarOpcionSalida(self, tipoReporte: TipoReporte): #39
         self.opcionSalida = tipoReporte
-        self.estrategia = self.crearEstrategia() 
-        return self.generarReporte()
-    
-    def generarReporte(self) -> None:
-        self.estrategia.generarReporte(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
-        self.pantalla.mostrarMensajeSatisfactorio(self.estrategia.mostrarMensajeSalida())
-        # return self.finDeCU()
+        self.generarReporte()
 
-    def crearEstrategia(self) -> Estrategia:
+    def generarReporte(self) -> None:
         match self.opcionSalida:
             case TipoReporte.CSV:
-                return EstrategiaCSV()
+                self.crearCSV(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
+                self.pantalla.mostrarMensajeSatisfactorio("Se genero el archivo CSV correctamente")
             case TipoReporte.IMPRESO:
-                return EstrategiaImprimir()
+                interfazImpresora = InterfazImpresora.getInstancia()
+                interfazImpresora.imprimir(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
+                self.pantalla.mostrarMensajeSatisfactorio("Se genero el archivo a imprimir correctamente")
+
+    def crearCSV(self, nombreCliente: str, duracionLlamada: int, estado: str, pregunta: list, respuesta: list):
+        encabezados = ["Nombre del cliente", "Duración", "Estado"]
+
+        # Añadir encabezados de preguntas y respuestas
+        for i in range(len(pregunta)):
+            encabezados.append('Pregunta')
+            encabezados.append('Respuesta')
+
+        datos = [nombreCliente, duracionLlamada, estado] + [val for pair in zip(pregunta, respuesta) for val in pair]
+
+        # Abrir archivo CSV en modo escritura
+        with open('reporte.csv', 'w', newline='', encoding="UTF-8") as archivo:
+            writer = csv.writer(archivo)
+
+            # Escribir encabezados en el archivo CSV
+            writer.writerow(encabezados)
+
+            # Escribir datos en el archivo CSV
+            writer.writerow(datos)
 
     def finDeCU(self):
         return exit()
