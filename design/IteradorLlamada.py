@@ -1,4 +1,4 @@
-from design.Iterator import Iterator
+from interfaces.Iterator import Iterator
 from models.Llamada import Llamada
 from typing import Callable, TypeVar
 T = TypeVar('T')
