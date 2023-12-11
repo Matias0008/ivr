@@ -12,9 +12,7 @@ class IteradorCambioEstado(Iterator):
         return self.cambioEstado[0]
 
     def siguiente(self) -> None:
-        cambioEstado = self.cambioEstado[self.posicion]
         self.posicion += 1
-        return cambioEstado
 
     def haTerminado(self) -> bool:
         return self.posicion >= (len(self.cambioEstado) - 1)
