@@ -1,3 +1,4 @@
+from typing import Callable
 from controllers.Database import *
 from datetime import datetime
 from enums.TipoReporte import TipoReporte
@@ -10,7 +11,6 @@ from models.Encuesta import Encuesta
 from models.Llamada import Llamada
 
 from views.PantallaConsultarEncuesta import *
-import csv
 
 class GestorConsultarEncuesta(Agregado):
     estrategia: Estrategia
@@ -29,8 +29,8 @@ class GestorConsultarEncuesta(Agregado):
 
     def crearIterador(self):
         self.llamadas = self.session.query(Llamada).all()
-        filtro_esDePeriodo = lambda llamada: llamada.esDePeriodo(self.fechaInicio, self.fechaFin)
-        filtro_tieneEncuestaRespondida = lambda llamada: llamada.tieneEncuestaRespondida()
+        filtro_esDePeriodo: Callable[[Llamada], bool] = lambda llamada: llamada.esDePeriodo(self.fechaInicio, self.fechaFin)
+        filtro_tieneEncuestaRespondida: Callable[[Llamada], bool] = lambda llamada: llamada.tieneEncuestaRespondida()
         return IteradorLlamada(self.llamadas, [filtro_esDePeriodo, filtro_tieneEncuestaRespondida])
 
     def setPantalla(self, pantalla: PantallaConsultarEncuesta):
@@ -119,11 +119,6 @@ class GestorConsultarEncuesta(Agregado):
         self.estrategia = self.crearEstrategia() 
         return self.generarReporte()
     
-    def generarReporte(self) -> None:
-        self.estrategia.generarReporte(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
-        self.pantalla.mostrarMensajeSatisfactorio(self.estrategia.mostrarMensajeSalida())
-        # return self.finDeCU()
-
     def crearEstrategia(self) -> Estrategia:
         match self.opcionSalida:
             case TipoReporte.CSV:
@@ -131,6 +126,10 @@ class GestorConsultarEncuesta(Agregado):
             case TipoReporte.IMPRESO:
                 return EstrategiaImprimir()
 
+    def generarReporte(self) -> None:
+        self.estrategia.generarReporte(self.nombreCliente, self.duracion, self.estadoActual, self.descripcionPreguntas, self.descripcionRespuestas)
+        self.pantalla.mostrarMensajeSatisfactorio(self.estrategia.mostrarMensajeSalida())
+        return self.finDeCU()
+
     def finDeCU(self):
         return exit()
-    
