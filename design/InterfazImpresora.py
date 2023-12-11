@@ -2,7 +2,6 @@ import webbrowser
 
 class InterfazImpresora:
     instancia = None
-    # Aplica el patron Singleton
 
     @staticmethod
     def getInstancia():
