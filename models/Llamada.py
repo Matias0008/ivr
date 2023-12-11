@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
-from interfaces.IteradorCambioEstado import IteradorCambioEstado
+from design.IteradorCambioEstado import IteradorCambioEstado
 
 from models.Base import base
 
